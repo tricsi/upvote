@@ -33,11 +33,15 @@ router.get('/', async (req, res) => {
 
         const jwt_token = jwt.sign({
             id: resp.data.id,
+            login: resp.data.login, 
             token: access_token
         }, process.env.JWT_SECRET);
         res.send({
             access_token: access_token,
-            jwt_token: jwt_token
+            jwt_token: jwt_token,
+            name: resp.data.name,
+            login: resp.data.login, 
+            avatar_url: resp.data.avatar_url,
         });
     } catch(error) {
         res.status(400).send({

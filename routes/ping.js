@@ -1,11 +1,10 @@
 const express = require('express');
-const route = express.Router();
+const router = express.Router();
 
-route.get('/', (req, res) => {
+router.get('/', (req, res) => {
     res.send({
-        id: req.user.id,
         ack: new Date().getTime()
     });
 });
 
-module.exports = route;
+module.exports = router;
