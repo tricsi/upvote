@@ -10,6 +10,7 @@ app.use(bodyParser.urlencoded());
 app.use('/auth', require('./routes/auth'));
 app.use('/api/ping', require('./routes/ping'));
 app.use('/api/entry', require('./routes/entry'));
+app.use('/api/vote', require('./routes/vote'));
 
 async function start() {
     const data = JSON.parse(fs.readFileSync('./data/import.json', 'utf8'));
