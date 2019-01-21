@@ -6,32 +6,54 @@ module.exports = {
     sequelize: sequelize,
 
     Entry: sequelize.define('Entry', {
-        name: {
+        title: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        owner: {
-            type: Sequelize.STRING,
+        description: {
+            type: Sequelize.TEXT,
             allowNull: false
         },
-        url: {
-            type: Sequelize.STRING,
+        categories: {
+            type: Sequelize.JSON,
             allowNull: false
+        },
+        github_repository: {
+            type: Sequelize.TEXT,
+            allowNull: false
+        },
+        authors: {
+            type: Sequelize.JSON,
+            allowNull: false
+        },
+        images: {
+            type: Sequelize.JSON,
+            allowNull: false
+        },
+        round: {
+            type: Sequelize.INTEGER.UNSIGNED,
+            allowNull: false,
+            defaultValue: 0
+        },
+        win: {
+            type: Sequelize.INTEGER.UNSIGNED,
+            allowNull: false,
+            defaultValue: 0
+        },
+        loose: {
+            type: Sequelize.INTEGER.UNSIGNED,
+            allowNull: false,
+            defaultValue: 0
         },
         score: {
             type: Sequelize.FLOAT,
             allowNull: false,
             defaultValue: 0
-        },
-        valid: {
-            type: Sequelize.BOOLEAN,
-            allowNull: false,
-            defaultValue: false
         }
     }, {
         indexes: [
             {
-                fields: ['name'],
+                fields: ['github_repository'],
                 unique: true
             }
         ]
