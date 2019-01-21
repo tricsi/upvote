@@ -29,6 +29,8 @@ router.post('/', auth, async (req, res) => {
                 vote = await model.Vote.create({
                     login: login,
                 }, {transaction: t});
+                await entries[0].increment({round: 1}, {transaction: t});
+                await entries[1].increment({round: 1}, {transaction: t});
                 await vote.addEntry(entries[0], {transaction: t});
                 await vote.addEntry(entries[1], {transaction: t});
             });
