@@ -2,43 +2,23 @@ const auth = require('../middleware/auth');
 const model = require('../models');
 const express = require('express');
 const router = express.Router();
-const Op = require('sequelize').Op;
+
+router.get('/', auth, async (req, res) => {
+    const vote = await model.Vote.findActive(req.user.login);
+    if (!vote) {
+        return res.send({error: "error_no_active_vote"});
+    }
+    res.send({data: await vote.getEntries()});
+});
 
 router.post('/', auth, async (req, res) => {
     const login = req.user.login;
-    let vote = await model.Vote.findOne({
-        where: {
-            login: login,
-            result: null
-        }
-    });
+    let vote = await model.Vote.findActive(login);
     if (!vote) {
-        const entries = await model.Entry.findAll({
-            where: {
-                github_repository: { $notLike: `${login}/%`}
-            },
-            order: [
-                ['round'],
-                ['loose'],
-                ['score'],
-                ['seed']
-            ]
-        });
-        try {
-            await model.sequelize.transaction(async t => {
-                vote = await model.Vote.create({
-                    login: login,
-                }, {transaction: t});
-                await entries[0].increment({round: 1}, {transaction: t});
-                await entries[1].increment({round: 1}, {transaction: t});
-                await vote.addEntry(entries[0], {transaction: t});
-                await vote.addEntry(entries[1], {transaction: t});
-            });
-        } catch (error) {
-            console.log(error);
-        }
+        const entries = await model.Entry.findNext(login);
+        vote = await model.Vote.createActive(login, entries);
     }
-    res.send(await vote.getEntries());
+    res.send({data: await vote.getEntries()});
 });
 
 module.exports = router;

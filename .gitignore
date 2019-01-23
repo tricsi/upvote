@@ -1,3 +1,4 @@
+.idea
 node_modules
 nodemon.json
 *.sqlite

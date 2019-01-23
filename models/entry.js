@@ -1,5 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Entry', {
+
+    const Entry = sequelize.define('Entry', {
         title: {
             type: DataTypes.STRING,
             allowNull: false
@@ -57,4 +58,20 @@ module.exports = (sequelize, DataTypes) => {
             }
         ]
     });
-}
+
+    Entry.findNext = async function(login) {
+        return Entry.findAll({
+            where: {
+                github_repository: { $notLike: `${login}/%`}
+            },
+            order: [
+                ['round'],
+                ['loose'],
+                ['score'],
+                ['seed']
+            ]
+        });
+    };
+
+    return Entry;
+};
