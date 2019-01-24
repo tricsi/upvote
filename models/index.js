@@ -1,5 +1,8 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+    logging: process.env.DATABASE_LOG ? console.log : false,
+    operatorsAliases: false
+});
 
 const Entry = sequelize.import('./entry');
 const Vote = sequelize.import('./vote');

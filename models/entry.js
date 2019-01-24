@@ -1,3 +1,6 @@
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 module.exports = (sequelize, DataTypes) => {
 
     const Entry = sequelize.define('Entry', {
@@ -59,10 +62,12 @@ module.exports = (sequelize, DataTypes) => {
         ]
     });
 
-    Entry.findAllQueued = async function(login) {
+    Entry.findAllQueued = async function(login, config) {
         return Entry.findAll({
             where: {
-                github_repository: { $notLike: `${login}/%`}
+                github_repository: {
+                    [Op.notLike]: `${login}/%`
+                }
             },
             include: {
                 model: sequelize.models.Vote
@@ -73,7 +78,7 @@ module.exports = (sequelize, DataTypes) => {
                 ['score'],
                 ['seed']
             ]
-        });
+        }, config);
     };
 
     Entry.prototype.hasVoteByLogin = function(login) {

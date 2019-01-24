@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', auth, async (req, res) => {
     const vote = await model.Vote.findActive(req.user.login);
     if (!vote) {
-        return res.send({error: "error_no_active_vote"});
+        throw new Error("error_no_active_vote");
     }
     res.send({data: await vote.getEntries()});
 });
@@ -18,7 +18,7 @@ router.post('/', auth, async (req, res) => {
         vote = await model.Vote.createActive(login);
     }
     if (!vote) {
-        return res.send({error: "error_no_vote_left"});
+        throw new Error("error_no_vote_left");
     }
     res.send({data: await vote.getEntries()});
 });
@@ -26,13 +26,9 @@ router.post('/', auth, async (req, res) => {
 router.patch('/', auth, async (req, res) => {
     const vote = await model.Vote.findActive(req.user.login);
     if (!vote) {
-        return res.send({error: "error_no_active_vote"});
+        throw new Error("error_no_active_vote");
     }
-    try {
-        await vote.saveResult(req.body.result);
-    } catch(e) {
-        return res.send({error: e.message});
-    }
+    await vote.saveResult(req.body.result);
     res.send(vote);
 });
 

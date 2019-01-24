@@ -1,17 +1,18 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+require('express-async-errors');
 const model = require('./models');
+const error = require('./middleware/error');
 const fs = require('fs');
 const app = express();
 const port = process.env.PORT;
 
 app.set('model', model);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(express.json());
 app.use('/auth', require('./routes/auth'));
 app.use('/api/ping', require('./routes/ping'));
 app.use('/api/entry', require('./routes/entry'));
 app.use('/api/vote', require('./routes/vote'));
+app.use(error);
 
 async function start() {
     const data = JSON.parse(fs.readFileSync('./data/import.json', 'utf8'));

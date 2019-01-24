@@ -11,43 +11,37 @@ router.get('/', async (req, res) => {
         res.send({ url: url.toJSON() });
         return;
     }
-    try {
-        let resp = await axios.post('https://github.com/login/oauth/access_token', {
-            client_id: process.env.GITHUB_ID,
-            client_secret: process.env.GITHUB_SECRET,
-            code: code
-        }, {
-            headers: { Accept: "application/json" }
-        });
-        if (!resp.data.access_token) {
-            throw new Error('invalid_code');
-        }
-        const access_token = resp.data.access_token;
-
-        resp = await axios.get('https://api.github.com/user', {
-            headers: { Authorization: `token ${access_token}` }
-        });
-        if (!resp.data.id) {
-            throw new Error('invalid_user');
-        }
-
-        const jwt_token = jwt.sign({
-            id: resp.data.id,
-            login: resp.data.login, 
-            token: access_token
-        }, process.env.JWT_SECRET);
-        res.send({
-            access_token: access_token,
-            jwt_token: jwt_token,
-            name: resp.data.name,
-            login: resp.data.login, 
-            avatar_url: resp.data.avatar_url,
-        });
-    } catch(error) {
-        res.status(400).send({
-            error: error.message
-        });
+    let resp = await axios.post('https://github.com/login/oauth/access_token', {
+        client_id: process.env.GITHUB_ID,
+        client_secret: process.env.GITHUB_SECRET,
+        code: code
+    }, {
+        headers: { Accept: "application/json" }
+    });
+    if (!resp.data.access_token) {
+        throw new Error('error_invalid_code');
     }
+    const access_token = resp.data.access_token;
+
+    resp = await axios.get('https://api.github.com/user', {
+        headers: { Authorization: `token ${access_token}` }
+    });
+    if (!resp.data.id) {
+        throw new Error('error_invalid_user');
+    }
+
+    const jwt_token = jwt.sign({
+        id: resp.data.id,
+        login: resp.data.login,
+        token: access_token
+    }, process.env.JWT_SECRET);
+    res.send({
+        access_token: access_token,
+        jwt_token: jwt_token,
+        name: resp.data.name,
+        login: resp.data.login,
+        avatar_url: resp.data.avatar_url,
+    });
 });
 
 module.exports = router;

@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
 
     Vote.createActive = async function(login) {
         return await sequelize.transaction(async t => {
-            const entries = await sequelize.models.Entry.findAllQueued(login);
+            const entries = await sequelize.models.Entry.findAllQueued(login, {transaction: t});
             let i = 0;
             while (i < entries.length && entries[i].hasVoteByLogin(login)) {
                 i++;
