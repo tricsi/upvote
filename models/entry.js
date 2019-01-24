@@ -59,10 +59,13 @@ module.exports = (sequelize, DataTypes) => {
         ]
     });
 
-    Entry.findNext = async function(login) {
+    Entry.findAllQueued = async function(login) {
         return Entry.findAll({
             where: {
                 github_repository: { $notLike: `${login}/%`}
+            },
+            include: {
+                model: sequelize.models.Vote
             },
             order: [
                 ['round'],
@@ -73,11 +76,13 @@ module.exports = (sequelize, DataTypes) => {
         });
     };
 
-    Entry.prototype.hasSameVote = async function(entry) {
-        const thisVotes = await this.getVotes();
-        const entryVotes = await entry.getVotes();
-        for (let i = 0; i < thisVotes.length; i++) {
-            if (entryVotes.some(vote => vote.id === thisVotes[i].id)) {
+    Entry.prototype.hasVoteByLogin = function(login) {
+        return this.Votes.some(vote => vote.login === login);
+    };
+
+    Entry.prototype.hasVoteInCommon = function(entry) {
+        for (let i = 0; i < this.Votes.length; i++) {
+            if (entry.Votes.some(vote => vote.id === this.Votes[i].id)) {
                 return true;
             }
         }

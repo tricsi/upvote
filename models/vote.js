@@ -21,20 +21,28 @@ module.exports = (sequelize, DataTypes) => {
         });
     };
 
-    Vote.createActive = async function(login, entries) {
-        let i = 1;
-        while (i < entries.length && await entries[0].hasSameVote(entries[i])) {
-            i++;
-        }
-        if (i >= entries.length) {
-            return null;
-        }
+    Vote.createActive = async function(login) {
         return await sequelize.transaction(async t => {
+            const entries = await sequelize.models.Entry.findAllQueued(login);
+            let i = 0;
+            while (i < entries.length && entries[i].hasVoteByLogin(login)) {
+                i++;
+            }
+            let j = i + 1;
+            while (j < entries.length && (
+                entries[j].hasVoteByLogin(login) ||
+                entries[j].hasVoteInCommon(entries[i])
+            )) {
+                j++;
+            }
+            if (j >= entries.length) {
+                return null;
+            }
             const vote = await Vote.create({login: login}, {transaction: t});
-            await entries[0].increment({round: 1}, {transaction: t});
             await entries[i].increment({round: 1}, {transaction: t});
-            await vote.addEntry(entries[0], {transaction: t});
-            await vote.addEntry(entries[1], {transaction: t});
+            await entries[j].increment({round: 1}, {transaction: t});
+            await vote.addEntry(entries[i], {transaction: t});
+            await vote.addEntry(entries[j], {transaction: t});
             return vote;
         });
     };

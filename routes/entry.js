@@ -4,7 +4,9 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        const data = await model.Entry.findAll();
+        const data = await model.Entry.findAll({
+            order: [['score', 'desc']]
+        });
         res.send(data);
     } catch(error) {
         res.status(400).send({

@@ -15,8 +15,7 @@ router.post('/', auth, async (req, res) => {
     const login = req.user.login;
     let vote = await model.Vote.findActive(login);
     if (!vote) {
-        const entries = await model.Entry.findNext(login);
-        vote = await model.Vote.createActive(login, entries);
+        vote = await model.Vote.createActive(login);
     }
     if (!vote) {
         return res.send({error: "error_no_vote_left"});
