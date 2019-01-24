@@ -18,7 +18,23 @@ router.post('/', auth, async (req, res) => {
         const entries = await model.Entry.findNext(login);
         vote = await model.Vote.createActive(login, entries);
     }
+    if (!vote) {
+        return res.send({error: "error_no_vote_left"});
+    }
     res.send({data: await vote.getEntries()});
+});
+
+router.patch('/', auth, async (req, res) => {
+    const vote = await model.Vote.findActive(req.user.login);
+    if (!vote) {
+        return res.send({error: "error_no_active_vote"});
+    }
+    try {
+        await vote.saveResult(req.body.result);
+    } catch(e) {
+        return res.send({error: e.message});
+    }
+    res.send(vote);
 });
 
 module.exports = router;

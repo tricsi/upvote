@@ -6,6 +6,7 @@ const app = express();
 const port = process.env.PORT;
 
 app.set('model', model);
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use('/auth', require('./routes/auth'));
 app.use('/api/ping', require('./routes/ping'));

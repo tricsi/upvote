@@ -1,0 +1,9 @@
+{
+    "env": {
+        "PORT": 3000,
+        "GITHUB_ID": "",
+        "GITHUB_SECRET": "",
+        "JWT_SECRET": "itsasecret",
+        "DATABASE_URL": "sqlite:db.sqlite"
+    }
+}

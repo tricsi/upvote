@@ -73,5 +73,16 @@ module.exports = (sequelize, DataTypes) => {
         });
     };
 
+    Entry.prototype.hasSameVote = async function(entry) {
+        const thisVotes = await this.getVotes();
+        const entryVotes = await entry.getVotes();
+        for (let i = 0; i < thisVotes.length; i++) {
+            if (entryVotes.some(vote => vote.id === thisVotes[i].id)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
     return Entry;
 };

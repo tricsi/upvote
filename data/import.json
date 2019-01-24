@@ -1,26 +1,5 @@
 [
     {
-        "title": "alchemist defence",
-        "description": "A 3D isometric tower defence.\nDrag and drop element from the menu to build towers, same thing to upgrade them. Drag the map to rotate it.\nThe game is quite not finished but can however be seen as fun.",
-        "categories": [
-          "desktop"
-        ],
-        "authors": [
-          {
-            "name": "Platane",
-            "website": "http://arthur-brongniart.fr/",
-            "github": "Platane"
-          }
-        ],
-        "github_repository": "Platane/13k-alchemist-defence",
-        "bundle_path": "bundle.zip",
-        "bundle_index": "index.html",
-        "images": {
-          "small": "images/small.jpg",
-          "big": "images/big.jpg"
-        }
-    },
-    {
         "title": "midnight pizza temptation",
         "description": "One button game,\n\n\t\t\t\t\tPress any letter key to control a carrier.\nDeliver pizza to location marked on your map.\nFeatures pizza rain and pizza explosion !\nPlay with up to 25 friend on the same keyboard !*\n* assuming your keyboard supports anti-ghosting and you and your friends enjoy meaningless games.",
         "categories": [
