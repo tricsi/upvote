@@ -1,5 +1,7 @@
 [
     {
+      "login": "Platane",
+      "data": {
         "title": "alchemist defence",
         "description": "A 3D isometric tower defence.\nDrag and drop element from the menu to build towers, same thing to upgrade them. Drag the map to rotate it.\nThe game is quite not finished but can however be seen as fun.",
         "categories": [
@@ -19,8 +21,11 @@
           "small": "images/small.jpg",
           "big": "images/big.jpg"
         }
+      }
     },
     {
+      "login": "Platane",
+      "data": {
         "title": "midnight pizza temptation",
         "description": "One button game,\n\n\t\t\t\t\tPress any letter key to control a carrier.\nDeliver pizza to location marked on your map.\nFeatures pizza rain and pizza explosion !\nPlay with up to 25 friend on the same keyboard !*\n* assuming your keyboard supports anti-ghosting and you and your friends enjoy meaningless games.",
         "categories": [
@@ -41,8 +46,11 @@
           "small": "images/small.jpg",
           "big": "images/big.jpg"
         }
+      }
     },
     {
+      "login": "Platane",
+      "data": {
         "title": "Vernissage",
         "description": "You are lost in a museum.\nFind your way out, take some times to look at the painting. It might guide you!\nDesktop:\n\n\t\t\t\t\tLook with clic + mouse\n\n\t\t\t\t\tMove forward with the space bar\nMobile:\n\n\t\t\t\t\tMove forward by touching\nCardboard:\n\n\t\t\t\t\tMove forward with the magnetic button",
         "categories": [
@@ -63,8 +71,11 @@
           "small": "images/small.jpg",
           "big": "images/big.jpg"
         }
+      }
     },
     {
+      "login": "Platane",
+      "data": {
         "title": "Sushi Kitchen",
         "description": "Command a fleet of cook to craft sushi! \nBuy new machines, hired more crew, expand your kitchen.\nThis is a management game.\nManual:\n\n\t\t\t\t\tEach machine have a recipe to transform inputs into something else.\nWorker can do two activities:\n\n\t\t\t\t\t - activate a machine ( click on the worker, then click on the machine )\n\n\t\t\t\t\t - carry something from a point A to point B ( click on the worker, then drag from A to B )",
         "categories": [
@@ -86,5 +97,6 @@
           "small": "images/small.jpg",
           "big": "images/big.jpg"
         }
+      }
     }
 ]

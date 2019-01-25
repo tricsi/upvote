@@ -8,9 +8,8 @@ module.exports = function (err, req, res, next) {
             code = 400;
             data.error = err.message;
         } else {
-            console.log(err);
+            next(err);
         }
         res.status(code).send(data);
     }
-    next(err);
 };

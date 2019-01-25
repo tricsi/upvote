@@ -4,27 +4,11 @@ const Op = Sequelize.Op;
 module.exports = (sequelize, DataTypes) => {
 
     const Entry = sequelize.define('Entry', {
-        title: {
+        login: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        description: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        categories: {
-            type: DataTypes.JSON,
-            allowNull: false
-        },
-        github_repository: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        authors: {
-            type: DataTypes.JSON,
-            allowNull: false
-        },
-        images: {
+        data: {
             type: DataTypes.JSON,
             allowNull: false
         },
@@ -44,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 0
         },
         score: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             defaultValue: 0
         },
@@ -53,22 +37,10 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             defaultValue: () => Math.random()
         }
-    }, {
-        indexes: [
-            {
-                fields: ['github_repository'],
-                unique: true
-            }
-        ]
     });
 
-    Entry.findAllQueued = async function(login, config) {
+    Entry.findAllQueued = async function(config) {
         return Entry.findAll({
-            where: {
-                github_repository: {
-                    [Op.notLike]: `${login}/%`
-                }
-            },
             include: {
                 model: sequelize.models.Vote
             },

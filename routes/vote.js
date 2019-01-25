@@ -8,19 +8,20 @@ router.get('/', auth, async (req, res) => {
     if (!vote) {
         throw new Error("error_no_active_vote");
     }
-    res.send({data: await vote.getEntries()});
+    res.send({data: vote.getData()});
 });
 
 router.post('/', auth, async (req, res) => {
     const login = req.user.login;
     let vote = await model.Vote.findActive(login);
     if (!vote) {
-        vote = await model.Vote.createActive(login);
+        await model.Vote.createActive(login);
+        vote = await model.Vote.findActive(login);
     }
     if (!vote) {
         throw new Error("error_no_vote_left");
     }
-    res.send({data: await vote.getEntries()});
+    res.send({data: vote.getData()});
 });
 
 router.patch('/', auth, async (req, res) => {
@@ -28,8 +29,8 @@ router.patch('/', auth, async (req, res) => {
     if (!vote) {
         throw new Error("error_no_active_vote");
     }
-    await vote.saveResult(req.body.result);
-    res.send(vote);
+    await vote.saveResult(req.body.result, 5);
+    res.send({data: vote.id});
 });
 
 module.exports = router;

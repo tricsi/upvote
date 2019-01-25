@@ -3,9 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    const data = await model.Entry.findAll({
-        order: [['score', 'desc']]
-    });
+    const data = await model.Entry.findAllQueued();
     res.send(data);
 });
 
