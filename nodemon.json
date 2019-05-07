@@ -1,0 +1,10 @@
+{
+  "env": {
+    "PORT": 3000,
+    "GITHUB_ID": "bdc3ef2779b0cbb4bc5b",
+    "GITHUB_SECRET": "e8e3b510666cbd0add4b80f2082d2fca09debffb",
+    "JWT_SECRET": "itsasecret",
+    "DATABASE_URL": "sqlite:db.sqlite",
+    "DATABASE_LOG": "true"
+  }
+}

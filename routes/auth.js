@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    const code = req.param('code');
+    const code = req.query.code;
     if (!code) {
         const url = new URL('https://github.com/login/oauth/authorize');
         url.searchParams.set('client_id', process.env.GITHUB_ID);
