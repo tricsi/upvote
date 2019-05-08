@@ -1,6 +1,3 @@
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
-
 module.exports = (sequelize, DataTypes) => {
 
     const Entry = sequelize.define('Entry', {

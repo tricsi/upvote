@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     Vote.prototype.saveResult = async function(result, length) {
-        if (!result instanceof  Array || result.length !== length) {
+        if (!(result instanceof  Array) || result.length !== length) {
             throw new Error('error_invalid_result_type');
         }
         const increment = [
