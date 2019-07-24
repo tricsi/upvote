@@ -2,45 +2,40 @@
   "name": "battlevote",
   "version": "1.0.0",
   "description": "Vote system for game jams",
-  "main": "index.js",
+  "author": "@CsabaCsecskedi",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "nodemon ./index.js",
-    "debug": "nodemon --inspect ./index.js"
+    "debug": "nodemon --inspect ./index.js",
+    "start": "nodemon ./index.js"
   },
-  "keywords": [
-    "game",
-    "jam",
-    "battle",
-    "vote"
-  ],
-  "author": "@CsabaCsecskedi",
-  "license": "MIT",
+  "main": "index.js",
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
-    "core-js": "^2.6.5",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^8.4.0",
     "pg": "^7.8.0",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^4.42.0",
-    "vue": "^2.6.10",
     "winston": "^3.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.7.0",
     "@vue/cli-plugin-eslint": "^3.7.0",
-    "@vue/cli-service": "^3.7.0",
+    "@vue/cli-service": "^3.9.3",
     "babel-eslint": "^10.0.1",
+    "bootstrap-vue": "^2.0.0-rc.27",
+    "core-js": "^2.6.5",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "nodemon": "^1.18.9",
+    "sequelize": "^5.10.2",
     "sqlite3": "^4.0.6",
+    "vue": "^2.6.10",
+    "vuex": "^3.0.1",
     "vue-template-compiler": "^2.5.21"
   },
   "eslintConfig": {
@@ -65,5 +60,12 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+  "keywords": [
+    "game",
+    "jam",
+    "battle",
+    "vote"
+  ],
+  "license": "MIT"
 }

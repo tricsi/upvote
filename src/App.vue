@@ -1,31 +1,24 @@
 <template>
   <div id="app">
-    <a :href="url" :disabled="!loading" @click="onLogin">Login</a>
+    <b-container>
+      <Login v-if="!user" />
+    </b-container>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import { mapState } from 'vuex';
+import { BContainer } from 'bootstrap-vue';
+import Login from './components/Login';
 
 export default {
   name: 'app',
-
-  data: function() {
-    return {
-      loading: true,
-      url: ''
-    };
+  components: {
+    Login,
+    BContainer
   },
-
-  async created() {
-    const response = await axios.get('/auth' + location.search);
-    this.url = response.data.url;
-    this.loading = false;
-  },
-
-  methods: {
-    onLogin() {
-    }
+  computed: {
+    ...mapState(['user'])
   }
 }
 </script>
