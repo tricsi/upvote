@@ -1,0 +1,22 @@
+import Vue from 'vue';
+import Router from 'vue-router';
+import Error from './views/admin/Error';
+
+Vue.use(Router);
+
+export default new Router({
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes: [
+    {path: '/', component: () => import('./views/admin/Home.vue')},
+    {path: '/vote', name: 'votes', component: () => import('./views/vote/VoteList.vue')},
+    {path: '/vote/:id', name: 'vote', component: () => import('./views/vote/VoteEdit.vue'), props: true},
+    {path: '*', component: Error, props: {code: '404', message: 'Page Not Found'}}
+  ],
+  scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    }
+    return { x: 0, y: 0};
+  }
+});

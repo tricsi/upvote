@@ -1,15 +1,14 @@
 <template>
-  <div class="text-center m-3">
-    <div class="my-4">
-      <h1>BattleVote</h1>
-      <div>for <a href="http://www.js13kgames.com">js13kgames.com</a></div>
+  <div v-if="!loading" class="card card-login mx-auto mt-5">
+    <div class="card-header">Battle Vote</div>
+    <div class="card-body">
+      <b-button :href="url" variant="primary" block>Sign in with GitHub</b-button>
     </div>
-    <b-button :href="url" :disabled="loading">Login with GitHub</b-button>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import Axios from 'axios';
 import { mapActions } from 'vuex';
 import { BButton } from 'bootstrap-vue';
 
@@ -37,7 +36,7 @@ export default {
       window.history.replaceState({}, document.title, location.pathname);
     }
     try {
-      const response = await axios.get(path);
+      const response = await Axios.get(path);
       this.loading = false;
       if (response.data.url) {
         this.url = response.data.url;
@@ -45,7 +44,6 @@ export default {
         this.signIn(response.data);
       }
     } catch (error) {
-      console.log(error);
     }
   }
 

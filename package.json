@@ -34,9 +34,11 @@
     "nodemon": "^1.18.9",
     "sequelize": "^5.10.2",
     "sqlite3": "^4.0.6",
+    "startbootstrap-sb-admin": "^5.1.1",
     "vue": "^2.6.10",
-    "vuex": "^3.0.1",
-    "vue-template-compiler": "^2.5.21"
+    "vue-router": "^3.0.7",
+    "vue-template-compiler": "^2.5.21",
+    "vuex": "^3.0.1"
   },
   "eslintConfig": {
     "root": true,

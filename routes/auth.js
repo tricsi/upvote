@@ -1,4 +1,4 @@
-const axios = require('axios');
+const Axios = require('axios');
 const jwt = require('jsonwebtoken');
 const express = require('express');
 const router = express.Router();
@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
         res.send({ url: url.toJSON() });
         return;
     }
-    let resp = await axios.post('https://github.com/login/oauth/access_token', {
+    let resp = await Axios.post('https://github.com/login/oauth/access_token', {
         client_id: process.env.GITHUB_ID,
         client_secret: process.env.GITHUB_SECRET,
         code: code
@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
     }
     const access_token = resp.data.access_token;
 
-    resp = await axios.get('https://api.github.com/user', {
+    resp = await Axios.get('https://api.github.com/user', {
         headers: { Authorization: `token ${access_token}` }
     });
     if (!resp.data.id) {
