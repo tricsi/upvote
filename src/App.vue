@@ -24,7 +24,7 @@
     <div id="wrapper">
 
       <ul class="sidebar navbar-nav">
-        <nav-link to="/vote" icon="file-alt">Votes</nav-link>
+        <nav-link to="/vote" icon="vote-yea">Vote</nav-link>
       </ul>
 
       <div id="content-wrapper">

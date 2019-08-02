@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h1>Votes</h1>
+    <h1>Vote</h1>
     <b-button
-      v-id="!loading"
+      v-if="!loading"
       @click.prevent="onCreate"
       variant="success"
-    >{{vote ? 'Edit' : 'Start'}} Vote</b-button>
+    >Start Vote</b-button>
   </div>
 </template>
 
@@ -32,23 +32,29 @@ export default {
 
     async onCreate() {
       if (!this.vote) {
-        const response = await Axios.post('/api/vote');
-        this.setVote(response.data.data);
+        this.loading = true;
+        try {
+          const response = await Axios.post('/api/vote');
+          this.setVote(response.data.data);
+        } catch (error) {
+          this.setVote(null);
+        }
+        this.loading = false;
       }
       this.$router.push({name: 'vote', params: {id: 0}});
     }
   },
 
   async created() {
-    if (this.vote) {
-      return;
+    if (!this.vote) {
+      try {
+        const response = await Axios.get('/api/vote');
+        this.setVote(response.data.data);
+      } catch (error) {
+        this.setVote(null);
+      }
     }
-    try {
-      const response = await Axios.get('/api/vote');
-      this.setVote(response.data.data);
-    } catch (error) {
-      this.loading = false;
-    }
+    this.loading = false;
   }
 };
 </script>
