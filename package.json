@@ -8,7 +8,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "debug": "nodemon --inspect ./index.js",
-    "start": "nodemon ./index.js",
+    "nodemon": "nodemon ./index.js",
+    "start": "node ./index.js",
     "import": "node ./import.js"
   },
   "main": "index.js",
