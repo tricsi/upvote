@@ -11,7 +11,7 @@ import 'startbootstrap-sb-admin/css/sb-admin.css';
 import 'startbootstrap-sb-admin/vendor/fontawesome-free/css/all.css';
 import 'startbootstrap-sb-admin/vendor/fontawesome-free/webfonts/fa-regular-400.svg';
 
-Axios.defaults.baseURL = 'http://localhost:3000/';
+Axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 Axios.defaults.headers.common['Authorization'] = store.state.user
   ? `Bearer ${store.state.user.jwt_token}`
   : null;
