@@ -93,6 +93,10 @@ export default {
     onChange() {
       const result = this.result.filter(value => value === 0 || value === 1);
       this.valid = result.length === this.criterias.length;
+      sessionStorage.setItem('vote', JSON.stringify({
+        result: this.result,
+        comments: this.comments
+      }));
     },
 
     async onStart() {
@@ -103,6 +107,7 @@ export default {
       try {
         const response = await Axios.post("/api/vote");
         this.vote = response.data.data;
+        this.error = null;
       } catch (error) {
         this.error = error.response.data.error;
       }
@@ -119,6 +124,7 @@ export default {
         this.vote = null;
         this.result = [];
         this.comments = [];
+        this.error = null;
       } catch (error) {
         this.error = error.response.data.error;
       }
@@ -129,8 +135,12 @@ export default {
   async created() {
     if (!this.vote) {
       try {
+        const session = JSON.parse(sessionStorage.getItem('vote')) || null
         const response = await Axios.get("/api/vote");
         this.vote = response.data.data;
+        this.result = session.result || [];
+        this.comments = session.comments || [];
+        this.error = null;
       } catch (error) {
         this.vote = null;
       }
