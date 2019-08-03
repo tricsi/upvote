@@ -1,5 +1,7 @@
 <template>
-  <b-card :title="data.title">
+  <b-card
+    :title="data.title"
+    :img-src="data.images.image_large">
     <b-card-text v-html="nl2br(data.description)"></b-card-text>
     <div slot="footer">
       <slot></slot>

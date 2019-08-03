@@ -1,9 +1,9 @@
 <template>
   <div v-if="!loading" class="card card-login mx-auto mt-5">
-    <div class="card-header">Battle Vote</div>
+    <div class="card-header text-center">BattleVote</div>
     <div class="card-body">
       <b-alert :show="error" variant="danger" dismissible>Login failed!</b-alert>
-      <b-button :href="url" variant="primary" block>Sign in with GitHub</b-button>
+      <b-button :href="url" variant="primary" block>Sign in with <i class="fab fa-fw fa-github" /> GitHub</b-button>
     </div>
   </div>
 </template>
@@ -33,7 +33,6 @@ export default {
     let path = '/auth';
     if (location.search) {
       path += location.search;
-      window.history.replaceState({}, document.title, location.pathname);
     }
     try {
       const response = await Axios.get(path);
@@ -41,6 +40,7 @@ export default {
         this.url = response.data.url;
       } else {
         this.signIn(response.data);
+        this.$router.push('/');
       }
     } catch (error) {
       this.error = true;

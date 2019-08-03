@@ -6,19 +6,19 @@
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
       <div class="container">
-        <router-link to="/" class="navbar-brand mr-1">BATTLE VOTE</router-link>
-        <ul class="navbar-nav ml-5 mr-auto">
-          <nav-link to="/vote" icon="vote-yea">Vote</nav-link>
+        <router-link to="/" class="navbar-brand mr-1">BattleVote</router-link>
+        <ul class="navbar-nav ml-5">
+          <nav-link to="/entries" icon="gamepad">Entries</nav-link>
         </ul>
         <b-dropdown right>
           <template slot="button-content">
             <b-img :src="user.avatar_url" rounded width="36" height="36" />
           </template>
           <b-dropdown-item :href="`https://github.com/${user.login}`" target="_blank">
-            <i class="fab fa-fw fa-github"></i> GitHub
+            <i class="fab fa-fw fa-github" /> {{user.login}}
           </b-dropdown-item>
           <b-dropdown-item href="#" @click.prevent="signOut">
-            <i class="fas fa-fw fa-power-off"></i> Sign Out
+            <i class="fas fa-fw fa-power-off" /> Sign Out
           </b-dropdown-item>
         </b-dropdown>
       </div>

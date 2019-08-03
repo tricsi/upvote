@@ -1,6 +1,5 @@
 <template>
   <div v-if="!loading">
-    <h1 class="text-center">Vote</h1>
 
     <b-alert :show="error" variant="danger">{{error}}</b-alert>
 
@@ -8,13 +7,13 @@
 
       <b-card-group deck class="mb-3">
         <EntryCard :data="vote.entries[0]">
-          <b-form-group label="Votes">
+          <b-form-group label="Criteria">
             <b-form-radio
               :key="index"
-              v-for="(criteria, index) in criterias"
+              v-for="(value, index) in criteria"
               v-model="result[index]"
               :value="0"
-            >{{criteria}}</b-form-radio>
+            >{{value}}</b-form-radio>
           </b-form-group>
           <b-form-group label="Comments">
             <b-form-textarea v-model="comments[0]" rows="5"></b-form-textarea>
@@ -22,13 +21,13 @@
         </EntryCard>
 
         <EntryCard :data="vote.entries[1]">
-          <b-form-group label="Votes">
+          <b-form-group label="Criteria">
             <b-form-radio
               :key="index"
-              v-for="(criteria, index) in criterias"
+              v-for="(value, index) in criteria"
               v-model="result[index]"
               :value="1"
-            >{{criteria}}</b-form-radio>
+            >{{value}}</b-form-radio>
           </b-form-group>
           <b-form-group label="Comments">
             <b-form-textarea v-model="comments[1]" rows="5"></b-form-textarea>
@@ -43,7 +42,7 @@
 
     <div v-else>
       <div class="col-md-6 mx-auto">
-        <b-button @click.prevent="onStart" variant="success" block>Start Vote</b-button>
+        <b-button @click.prevent="onCreate" variant="success" block>Start Vote</b-button>
       </div>
     </div>
   </div>
@@ -51,6 +50,7 @@
 
 <script>
 import EntryCard from "../../components/EntryCard";
+import Config from "../../config";
 import Axios from "axios";
 import {
   BButton,
@@ -78,28 +78,30 @@ export default {
       comments: [],
       result: [],
       vote: null,
-      criterias: [
-        "Theme use",
-        "Gameplay",
-        "Innovation",
-        "Controls",
-        "Execution"
-      ]
+      criteria: Config.criteria
     };
   },
 
   methods: {
 
-    onChange() {
+    validate() {
       const result = this.result.filter(value => value === 0 || value === 1);
-      this.valid = result.length === this.criterias.length;
+      this.valid = result.length === this.criteria.length;
+    },
+
+    saveSession() {
       sessionStorage.setItem('vote', JSON.stringify({
         result: this.result,
         comments: this.comments
       }));
     },
 
-    async onStart() {
+    onChange() {
+      this.validate();
+      this.saveSession();
+    },
+
+    async onCreate() {
       if (this.vote) {
         return;
       }
@@ -125,6 +127,8 @@ export default {
         this.result = [];
         this.comments = [];
         this.error = null;
+        this.validate();
+        this.saveSession();
       } catch (error) {
         this.error = error.response.data.error;
       }
@@ -141,6 +145,7 @@ export default {
         this.result = session.result || [];
         this.comments = session.comments || [];
         this.error = null;
+        this.validate();
       } catch (error) {
         this.vote = null;
       }
