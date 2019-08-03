@@ -5,7 +5,7 @@ require('express-async-errors');
 const model = require('./models');
 const error = require('./middleware/error');
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 80;
 
 app.set('model', model);
 app.use(cors());
