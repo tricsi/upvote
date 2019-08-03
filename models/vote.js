@@ -88,7 +88,7 @@ module.exports = (sequelize, DataTypes) => {
     Vote.prototype.getData = function () {
         return {
             entries: this.Entries.map(entry => entry.data),
-            createdAt: this.createdAt,
+            createdAt: this.createdAt.getTime(),
         };
     };
 

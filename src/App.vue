@@ -5,52 +5,42 @@
   <div v-else>
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-      <router-link to="/" class="navbar-brand mr-1">BATTLE VOTE</router-link>
-      <div class="ml-auto"></div>
-      <ul class="navbar-nav ml-auto ml-md-0">
-        <li class="nav-item">
-          <a href="#" @click.prevent="signOut" class="nav-link" title="Sign Out">
-            <i class="fas fa-fw fa-power-off"></i>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a :href="`https://github.com/${user.login}`" :title="user.name" target="_blank">
-            <b-img :src="user.avatar_url" rounded width="40" height="40" />
-          </a>
-        </li>
-      </ul>
+      <div class="container">
+        <router-link to="/" class="navbar-brand mr-1">BATTLE VOTE</router-link>
+        <ul class="navbar-nav ml-5 mr-auto">
+          <nav-link to="/vote" icon="vote-yea">Vote</nav-link>
+        </ul>
+        <b-dropdown right>
+          <template slot="button-content">
+            <b-img :src="user.avatar_url" rounded width="36" height="36" />
+          </template>
+          <b-dropdown-item :href="`https://github.com/${user.login}`" target="_blank">
+            <i class="fab fa-fw fa-github"></i> GitHub
+          </b-dropdown-item>
+          <b-dropdown-item href="#" @click.prevent="signOut">
+            <i class="fas fa-fw fa-power-off"></i> Sign Out
+          </b-dropdown-item>
+        </b-dropdown>
+      </div>
     </nav>
 
-    <div id="wrapper">
+    <main class="container py-3" role="main">
+      <router-view></router-view>
+    </main>
 
-      <ul class="sidebar navbar-nav">
-        <nav-link to="/vote" icon="vote-yea">Vote</nav-link>
-      </ul>
-
-      <div id="content-wrapper">
-        <transition name="fade" mode="out-in">
-          <router-view class="container-fluid"></router-view>
-        </transition>
-      </div>
-
-    </div>
   </div>
 
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import { BImg } from 'bootstrap-vue';
+import { BDropdown, BDropdownItem, BImg } from 'bootstrap-vue';
 import Login from './views/admin/Login';
 import NavLink from './components/NavLink';
 
 export default {
   name: 'app',
-  components: {
-    BImg,
-    Login,
-    NavLink
-  },
+  components: { BDropdown, BDropdownItem, BImg, Login, NavLink },
   computed: {
     ...mapState(['user'])
   },
