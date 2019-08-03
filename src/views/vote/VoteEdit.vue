@@ -42,7 +42,7 @@
 
     <div v-else>
       <div class="col-md-6 mx-auto">
-        <b-button @click.prevent="onCreate" variant="success" block>Start Vote</b-button>
+        <b-button @click.prevent="onCreate" variant="primary" block>Start Vote</b-button>
       </div>
     </div>
   </div>
@@ -111,7 +111,7 @@ export default {
         this.vote = response.data.data;
         this.error = null;
       } catch (error) {
-        this.error = error.response.data.error;
+        this.error = Config.messages[error.response.data.error];
       }
       this.loading = false;
     },
@@ -130,7 +130,7 @@ export default {
         this.validate();
         this.saveSession();
       } catch (error) {
-        this.error = error.response.data.error;
+        this.error = Config.messages[error.response.data.error];
       }
       this.loading = false;
     }

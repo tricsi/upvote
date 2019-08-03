@@ -2,7 +2,7 @@
   <div v-if="!loading" class="card card-login mx-auto mt-5">
     <div class="card-header text-center">BattleVote</div>
     <div class="card-body">
-      <b-alert :show="error" variant="danger" dismissible>Login failed!</b-alert>
+      <b-alert :show="error" variant="danger" dismissible>Access denied!</b-alert>
       <b-button :href="url" variant="primary" block>Sign in with <i class="fab fa-fw fa-github" /> GitHub</b-button>
     </div>
   </div>
