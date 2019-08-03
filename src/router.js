@@ -9,6 +9,7 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {path: '/', name: 'votes', component: () => import('./views/vote/VoteEdit.vue')},
+    {path: '/entries', name: 'entries', component: () => import('./views/entry/EntryList.vue')},
     {path: '*', component: Error, props: {code: '404', message: 'Page Not Found'}}
   ],
   scrollBehavior (to, from, savedPosition) {

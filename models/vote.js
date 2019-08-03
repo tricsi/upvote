@@ -69,11 +69,11 @@ module.exports = (sequelize, DataTypes) => {
         }
         if (increment[0].score > increment[1].score) {
             increment[0].win = 1;
-            increment[1].loose = 1;
+            increment[1].lose = 1;
         }
         if (increment[0].score < increment[1].score) {
             increment[1].win = 1;
-            increment[0].loose = 1;
+            increment[0].lose = 1;
         }
         return await sequelize.transaction(async t => {
             const entries = await this.getEntries();

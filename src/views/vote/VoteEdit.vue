@@ -122,7 +122,10 @@ export default {
       }
       this.loading = true;
       try {
-        await Axios.patch('/api/vote', { result: this.result });
+        await Axios.patch('/api/vote', { 
+          result: this.result,
+          comments: this.comments
+        });
         this.vote = null;
         this.result = [];
         this.comments = [];

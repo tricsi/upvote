@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             defaultValue: 0
         },
-        loose: {
+        lose: {
             type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             defaultValue: 0
@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             order: [
                 ['round'],
-                ['loose'],
+                ['lose'],
                 ['score'],
                 ['seed']
             ]
@@ -62,6 +62,17 @@ module.exports = (sequelize, DataTypes) => {
         }
         return false;
     };
+
+    Entry.prototype.saveComment = async function(login, message) {
+        await sequelize.transaction(async t => {
+            const comment = await sequelize.models.Comment.create({
+                login: login,
+                message: message,
+            }, {transaction: t});
+            await comment.setEntry(this, {transaction: t});
+            return comment;
+        });
+    }
 
     return Entry;
 };
