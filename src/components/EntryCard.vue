@@ -8,9 +8,7 @@
     </b-card-title>
     <b-card-text v-html="nl2br(data.description)"></b-card-text>
     <b-card-text class="small text-muted">{{data.category.join(', ')}}</b-card-text>
-    <div slot="footer">
-      <slot></slot>
-    </div>
+    <div v-if="$slots.default" slot="footer"><slot></slot></div>
   </b-card>
 </template>
 

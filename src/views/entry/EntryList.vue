@@ -1,9 +1,11 @@
 <template>
   <div v-if="!loading">
     <b-table :items="items" :fields="fields" :striped="true">
+      <template slot="rank" slot-scope="data">
+        {{ data.item.rank ? `#${data.item.rank}` : '' }}
+      </template>
       <template slot="title" slot-scope="data">
-        <span :id="`#game${data.item.id}`">#{{ data.item.rank }} </span>
-        <a :href="`#game${data.item.id}`">{{ data.item.title }}</a>
+        <router-link :to="{name: 'entry', params:{id: data.item.id}}">{{ data.item.title }}</router-link>
       </template>
     </b-table>
   </div>
@@ -20,11 +22,16 @@ export default {
       items: null,
       length: 9999,
       fields: {
+        rank: {
+          label: "",
+          tdClass: "text-right"
+        },
         title: {
           label: "Game"
         },
-        round: {
-          label: "Round",
+        votes: {
+          key: "votes.length",
+          label: "Votes",
           tdClass: "text-center"
         },
         win: {
@@ -85,14 +92,14 @@ export default {
 
     computeRank(data) {
       let rank = 1;
-      data[0].rank = data[0].round ? rank : 0;
+      data[0].rank = data[0].votes.length ? rank : 0;
       for (let i = 1; i < data.length; i++) {
         const item1 = data[i - 1];
         const item2 = data[i];
         if (item1.score > item2.score || item1.tie > item2.tie) {
           rank = i + 1;
         }
-        item2.rank = item2.round ? rank : 0;
+        item2.rank = item2.votes.length ? rank : 0;
       }
     }
 

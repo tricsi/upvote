@@ -3,7 +3,7 @@
 
     <b-alert :show="error" variant="danger">{{error}}</b-alert>
 
-    <form v-if="vote" @submit.prevent="onSubmit" @change="onChange" class="my-3">
+    <form v-if="vote !== null" @submit.prevent="onSubmit" @change="onChange" class="my-3">
 
       <b-card-group deck class="mb-3">
         <EntryCard :data="vote.entries[0]">
@@ -92,6 +92,24 @@ export default {
     };
   },
 
+  async created() {
+    const session = JSON.parse(sessionStorage.getItem('vote')) || {
+      comments: [],
+      result: []
+    };
+    this.comments = session.comments;
+    this.result = session.result;
+    this.validate();
+    try {
+      const response = await Axios.get("/api/vote");
+      this.vote = response.data.data;
+      this.error = null;
+    } catch (error) {
+      this.vote = null;
+    }
+    this.loading = false;
+  },
+
   methods: {
 
     validate() {
@@ -147,23 +165,8 @@ export default {
       }
       this.loading = false;
     }
-  },
 
-  async created() {
-    if (!this.vote) {
-      try {
-        const session = JSON.parse(sessionStorage.getItem('vote')) || null
-        const response = await Axios.get("/api/vote");
-        this.vote = response.data.data;
-        this.result = session.result || [];
-        this.comments = session.comments || [];
-        this.error = null;
-        this.validate();
-      } catch (error) {
-        this.vote = null;
-      }
-    }
-    this.loading = false;
   }
+
 };
 </script>

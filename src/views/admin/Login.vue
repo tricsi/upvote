@@ -48,11 +48,11 @@ export default {
         this.url = response.data.url;
       } else {
         this.signIn(response.data);
-        this.$router.push('/');
       }
     } catch (error) {
       this.error = true;
     }
+    this.$router.replace('/');
     this.loading = false;
   }
 

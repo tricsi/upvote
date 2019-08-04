@@ -8,7 +8,12 @@
       <div class="container">
         <router-link to="/" class="navbar-brand mr-1">BattleVote</router-link>
         <ul class="navbar-nav ml-5">
-          <nav-link to="/entries" icon="gamepad">Entries</nav-link>
+            <li class="nav-item">
+              <router-link :to="{name: 'entries'}" active-class="active" class="nav-link">
+                <i class="fas fa-fw fa-poll"></i>
+                <span class="ml-1">Results</span>
+              </router-link>
+            </li>
         </ul>
         <b-dropdown right>
           <template slot="button-content">
@@ -36,11 +41,10 @@
 import { mapState, mapActions } from 'vuex';
 import { BDropdown, BDropdownItem, BImg } from 'bootstrap-vue';
 import Login from './views/admin/Login';
-import NavLink from './components/NavLink';
 
 export default {
   name: 'app',
-  components: { BDropdown, BDropdownItem, BImg, Login, NavLink },
+  components: { BDropdown, BDropdownItem, BImg, Login },
   computed: {
     ...mapState(['user'])
   },
