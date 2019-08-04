@@ -1,8 +1,8 @@
 <template>
   <div v-if="!loading">
-    <b-table :items="items" :fields="fields" :striped="true">
+    <b-table :items="items" :fields="fields" striped  responsive>
       <template slot="rank" slot-scope="data">
-        {{ data.item.rank ? `#${data.item.rank}` : '' }}
+        {{ data.item.rank || '' }}
       </template>
       <template slot="title" slot-scope="data">
         <router-link :to="{name: 'entry', params:{id: data.item.id}}">{{ data.item.title }}</router-link>
@@ -23,7 +23,7 @@ export default {
       length: 9999,
       fields: {
         rank: {
-          label: "",
+          label: "#",
           tdClass: "text-right"
         },
         title: {
