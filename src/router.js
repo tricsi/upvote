@@ -8,15 +8,15 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    {path: '/', name: 'votes', component: () => import('./views/vote/VoteEdit.vue')},
-    {path: '/entries', name: 'entries', component: () => import('./views/entry/EntryList.vue')},
-    {path: '/entry/:id', name: 'entry', component: () => import('./views/entry/EntryView.vue'), props: true},
-    {path: '*', component: Error, props: {code: '404', message: 'Page Not Found'}}
+    { path: '/', name: 'votes', component: () => import('./views/vote/VoteEdit.vue') },
+    { path: '/entries', name: 'entries', component: () => import('./views/entry/EntryList.vue') },
+    { path: '/entry/:id', name: 'entry', component: () => import('./views/entry/EntryView.vue'), props: true },
+    { path: '*', component: Error, props: { code: '404', message: 'Page Not Found' } }
   ],
-  scrollBehavior (to, from, savedPosition) {
+  scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition;
     }
-    return { x: 0, y: 0};
+    return { x: 0, y: 0 };
   }
 });

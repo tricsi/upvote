@@ -1,14 +1,13 @@
 module.exports = {
   chainWebpack: config => {
-    // GraphQL Loader
     config.module
       .rule('markdown')
       .test(/\.md$/)
       .use('html-loader')
-        .loader('html-loader')
-        .end()
+      .loader('html-loader')
+      .end()
       .use('markdown-loader')
-        .loader('markdown-loader')
-        .end();
+      .loader('markdown-loader')
+      .end();
   }
 }

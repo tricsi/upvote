@@ -1,10 +1,8 @@
 <template>
   <div v-if="!loading">
-
     <b-alert :show="error" variant="danger">{{error}}</b-alert>
 
     <form v-if="vote !== null" @submit.prevent="onSubmit" @change="onChange" class="my-3">
-
       <b-card-group deck class="mb-3">
         <EntryCard :data="vote.entries[0]">
           <b-form-group label="Criteria">
@@ -41,25 +39,19 @@
     </form>
 
     <div v-else>
-      <div class="col-lg-8 mx-auto" v-html="content"></div>
-      <div class="col-md-6 mx-auto my-4">
+      <div class="col-md-6 col-sm-8 mx-auto text-center" v-html="content"></div>
+      <div class="col-md-4 col-sm-6 mx-auto my-4">
         <b-button @click.prevent="onCreate" variant="primary" block>Start Vote</b-button>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-h1 {
-  text-align: center;
-}
-</style>
-
 <script>
 import EntryCard from "../../components/EntryCard";
 import Config from "../../config";
 import Axios from "axios";
-import Content from "../../Vote.md";
+import Content from "../../content/Vote.md";
 
 import {
   BButton,
@@ -93,7 +85,7 @@ export default {
   },
 
   async created() {
-    const session = JSON.parse(sessionStorage.getItem('vote')) || {
+    const session = JSON.parse(sessionStorage.getItem("vote")) || {
       comments: [],
       result: []
     };
@@ -111,17 +103,19 @@ export default {
   },
 
   methods: {
-
     validate() {
       const result = this.result.filter(value => value === 0 || value === 1);
       this.valid = result.length === this.criteria.length;
     },
 
     saveSession() {
-      sessionStorage.setItem('vote', JSON.stringify({
-        result: this.result,
-        comments: this.comments
-      }));
+      sessionStorage.setItem(
+        "vote",
+        JSON.stringify({
+          result: this.result,
+          comments: this.comments
+        })
+      );
     },
 
     onChange() {
@@ -150,7 +144,7 @@ export default {
       }
       this.loading = true;
       try {
-        await Axios.patch('/api/vote', { 
+        await Axios.patch("/api/vote", {
           result: this.result,
           comments: this.comments
         });
@@ -165,8 +159,6 @@ export default {
       }
       this.loading = false;
     }
-
   }
-
 };
 </script>

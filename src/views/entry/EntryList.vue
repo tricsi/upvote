@@ -1,9 +1,7 @@
 <template>
   <div v-if="!loading">
-    <b-table :items="items" :fields="fields" striped  responsive>
-      <template slot="rank" slot-scope="data">
-        {{ data.item.rank || '' }}
-      </template>
+    <b-table :items="items" :fields="fields" striped responsive>
+      <template slot="rank" slot-scope="data">{{ data.item.rank || '' }}</template>
       <template slot="title" slot-scope="data">
         <router-link :to="{name: 'entry', params:{id: data.item.id}}">{{ data.item.title }}</router-link>
       </template>
@@ -15,7 +13,6 @@
 import Axios from "axios";
 
 export default {
-
   data() {
     return {
       loading: true,
@@ -65,7 +62,6 @@ export default {
   },
 
   methods: {
-
     computeTies(data) {
       for (const item1 of data) {
         item1.tie = 0;
@@ -102,8 +98,6 @@ export default {
         item2.rank = item2.votes.length ? rank : 0;
       }
     }
-
   }
-
 };
 </script>

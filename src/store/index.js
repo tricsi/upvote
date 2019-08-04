@@ -1,11 +1,11 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 import Axios from 'axios';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  
+
   state: {
     user: JSON.parse(sessionStorage.getItem('user')) || null,
   },
@@ -22,14 +22,14 @@ export default new Vuex.Store({
 
   actions: {
 
-    signIn({commit}, user) {
+    signIn({ commit }, user) {
       commit('setUser', user);
     },
 
-    signOut({commit}) {
+    signOut({ commit }) {
       commit('setUser', null);
     }
 
   }
 
-})
+});

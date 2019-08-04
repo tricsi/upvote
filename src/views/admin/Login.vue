@@ -1,27 +1,24 @@
 <template>
   <div v-if="!loading" class="container">
-    <div class="col-lg-8 mx-auto my-4" v-html="content"></div>
-    <div class="col-md-6 mx-auto">
+    <div class="col-lg-8 mx-auto my-4 text-center" v-html="content"></div>
+    <div class="col-md-4 col-sm-6 mx-auto">
       <b-alert :show="error" variant="danger" dismissible>Access denied!</b-alert>
-      <b-button :href="url" variant="primary" block>Sign in with <i class="fab fa-fw fa-github" /> GitHub</b-button>
+      <b-button :href="url" variant="primary" block>
+        Sign in with
+        <i class="fab fa-fw fa-github" /> GitHub
+      </b-button>
     </div>
   </div>
 </template>
 
-<style scoped>
-h1, h2, p {
-  text-align: center;
-}
-</style>
-
 <script>
-import Axios from 'axios';
-import { mapActions } from 'vuex';
-import { BAlert, BButton } from 'bootstrap-vue';
-import Readme from '../../Readme.md';
+import Axios from "axios";
+import { mapActions } from "vuex";
+import { BAlert, BButton } from "bootstrap-vue";
+import Readme from "../../content/Login.md";
 
 export default {
-  name: 'Login',
+  name: "Login",
   components: { BAlert, BButton },
 
   data: function() {
@@ -29,16 +26,16 @@ export default {
       error: false,
       loading: true,
       content: Readme,
-      url: ''
+      url: ""
     };
   },
 
   methods: {
-    ...mapActions(['signIn'])
+    ...mapActions(["signIn"])
   },
 
   async created() {
-    let path = '/auth';
+    let path = "/auth";
     if (location.search) {
       path += location.search;
     }
@@ -52,9 +49,8 @@ export default {
     } catch (error) {
       this.error = true;
     }
-    this.$router.replace('/');
+    this.$router.replace("/");
     this.loading = false;
   }
-
-}
+};
 </script>
