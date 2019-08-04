@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!loading">
     <b-table :items="items" :fields="fields" :striped="true">
       <template slot="title" slot-scope="data">
         <span :id="`#game${data.item.id}`">#{{ data.item.rank }} </span>
@@ -54,6 +54,7 @@ export default {
     this.sortByScore(data);
     this.computeRank(data);
     this.items = data;
+    this.loading = false;
   },
 
   methods: {
