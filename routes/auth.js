@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const Axios = require('axios');
 const jwt = require('jsonwebtoken');
 const express = require('express');
@@ -19,6 +20,7 @@ router.get('/', async (req, res) => {
         headers: { Accept: "application/json" }
     });
     if (!resp.data.access_token) {
+        console.log(resp.data);
         throw new Error('error_invalid_code');
     }
     const access_token = resp.data.access_token;
