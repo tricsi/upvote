@@ -41,17 +41,26 @@
     </form>
 
     <div v-else>
-      <div class="col-md-6 mx-auto">
+      <div class="col-lg-8 mx-auto" v-html="content"></div>
+      <div class="col-md-6 mx-auto my-4">
         <b-button @click.prevent="onCreate" variant="primary" block>Start Vote</b-button>
       </div>
     </div>
   </div>
 </template>
 
+<style>
+h1 {
+  text-align: center;
+}
+</style>
+
 <script>
 import EntryCard from "../../components/EntryCard";
 import Config from "../../config";
 import Axios from "axios";
+import Content from "../../Vote.md";
+
 import {
   BButton,
   BCardGroup,
@@ -78,7 +87,8 @@ export default {
       comments: [],
       result: [],
       vote: null,
-      criteria: Config.criteria
+      criteria: Config.criteria,
+      content: Content
     };
   },
 

@@ -1,17 +1,24 @@
 <template>
-  <div v-if="!loading" class="card card-login mx-auto mt-5">
-    <div class="card-header text-center">BattleVote</div>
-    <div class="card-body">
+  <div v-if="!loading" class="container">
+    <div class="col-lg-8 mx-auto my-4" v-html="content"></div>
+    <div class="col-md-6 mx-auto">
       <b-alert :show="error" variant="danger" dismissible>Access denied!</b-alert>
       <b-button :href="url" variant="primary" block>Sign in with <i class="fab fa-fw fa-github" /> GitHub</b-button>
     </div>
   </div>
 </template>
 
+<style>
+h1, h2, p {
+  text-align: center;
+}
+</style>
+
 <script>
 import Axios from 'axios';
 import { mapActions } from 'vuex';
 import { BAlert, BButton } from 'bootstrap-vue';
+import Readme from '../../Readme.md';
 
 export default {
   name: 'Login',
@@ -21,6 +28,7 @@ export default {
     return {
       error: false,
       loading: true,
+      content: Readme,
       url: ''
     };
   },
