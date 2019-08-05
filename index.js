@@ -15,13 +15,16 @@ app.use('/auth', require('./routes/auth'));
 app.use('/api/ping', require('./routes/ping'));
 app.use('/api/entry', require('./routes/entry'));
 app.use('/api/vote', require('./routes/vote'));
+app.get('/*', (req, res) => {
+  res.sendFile(__dirname + '/dist/index.html');
+});
 app.use(error);
 
 async function start() {
-    await model.sequelize.authenticate();
-    app.listen(port, () => {
-        console.log(`Server listening on port ${port}!`);
-    });
+  await model.sequelize.authenticate();
+  app.listen(port, () => {
+    console.log(`Server listening on port ${port}!`);
+  });
 }
 
 start();
