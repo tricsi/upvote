@@ -1,3 +1,6 @@
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 module.exports = (sequelize, DataTypes) => {
 
   const Vote = sequelize.define('Vote', {
@@ -21,6 +24,40 @@ module.exports = (sequelize, DataTypes) => {
       }
     });
   };
+
+  Vote.pickExpired = async function(login, expire, mine, same) {
+    return await sequelize.transaction(async t => {
+      const votes = await Vote.findAll({
+        where: {
+          result: null,
+          updatedAt: { [Op.lt]: new Date(new Date() - expire * 1000) }
+        },
+        include: {
+          model: sequelize.models.Entry,
+          include: {
+            model: sequelize.models.Vote
+          }
+        }
+      }, { transaction: t });
+      for (const vote of votes) {
+        let valid = true;
+        for (const entry of vote.Entries) {
+          if (
+            (!mine && entry.login === login) ||
+            (!same && entry.hasVoteByLogin(login))
+          ) {
+            valid = false;
+          }
+        }
+        if (valid) {
+          vote.login = login;
+          await vote.save();
+          return vote;
+        }
+      }
+      return null;
+    });
+  }
 
   Vote.createActive = async function (login, mine, same, again) {
     return await sequelize.transaction(async t => {

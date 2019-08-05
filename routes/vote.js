@@ -2,6 +2,7 @@ const auth = require('../middleware/auth');
 const model = require('../models');
 const express = require('express');
 const router = express.Router();
+const expire = parseInt(process.env.VOTE_EXPIRE) || 0;
 
 router.get('/', auth, async (req, res) => {
   const vote = await model.Vote.findActive(req.user.login);
@@ -14,6 +15,9 @@ router.get('/', auth, async (req, res) => {
 router.post('/', auth, async (req, res) => {
   const login = req.user.login;
   let vote = await model.Vote.findActive(login);
+  if (expire && !vote) {
+    vote = await model.Vote.pickExpired(login, expire);
+  }
   if (!vote) {
     await model.Vote.createActive(login);
     vote = await model.Vote.findActive(login);
