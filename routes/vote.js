@@ -1,5 +1,6 @@
 const auth = require('../middleware/auth');
 const model = require('../models');
+const config = require('../src/config');
 const express = require('express');
 const router = express.Router();
 const expire = parseInt(process.env.VOTE_EXPIRE) || 0;
@@ -15,11 +16,10 @@ router.get('/', auth, async (req, res) => {
 router.post('/', auth, async (req, res) => {
   const login = req.user.login;
   let vote = await model.Vote.findActive(login);
-  if (expire && !vote) {
-    vote = await model.Vote.pickExpired(login, expire);
+  if (expire && !vote && await model.Vote.pickExpired(login, expire)) {
+    vote = await model.Vote.findActive(login);
   }
-  if (!vote) {
-    await model.Vote.createActive(login);
+  if (!vote && await model.Vote.createActive(login)) {
     vote = await model.Vote.findActive(login);
   }
   if (!vote) {
@@ -34,7 +34,7 @@ router.patch('/', auth, async (req, res) => {
   if (!vote) {
     throw new Error("error_no_active_vote");
   }
-  await vote.saveResult(req.body.result, 5);
+  await vote.saveResult(req.body.result, config.criteria.length);
   if (req.body.comments instanceof Array) {
     const entries = await vote.getEntries();
     entries.forEach(async (entry, i) => {

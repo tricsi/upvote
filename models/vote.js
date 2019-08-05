@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Vote.findActive = async function (login) {
-    return Vote.findOne({
+    const vote = await Vote.findOne({
       where: {
         login: login,
         result: null
@@ -23,9 +23,13 @@ module.exports = (sequelize, DataTypes) => {
         model: sequelize.models.Entry
       }
     });
+    if (vote) {
+      vote.Entries.sort((a, b) => a.seed - b.seed);
+    }
+    return vote;
   };
 
-  Vote.pickExpired = async function(login, expire, mine, same) {
+  Vote.pickExpired = async function (login, expire, mine, same) {
     return await sequelize.transaction(async t => {
       const votes = await Vote.findAll({
         where: {
