@@ -76,8 +76,8 @@ export default {
       valid: false,
       error: false,
       loading: true,
-      comments: [],
-      result: [],
+      comments: null,
+      result: null,
       vote: null,
       criteria: Config.criteria,
       content: Content
@@ -86,7 +86,7 @@ export default {
 
   async created() {
     const session = JSON.parse(sessionStorage.getItem("vote")) || {
-      comments: [],
+      comments: ["", ""],
       result: []
     };
     this.comments = session.comments;
@@ -150,7 +150,7 @@ export default {
         });
         this.vote = null;
         this.result = [];
-        this.comments = [];
+        this.comments = ["", ""];
         this.error = null;
         this.validate();
         this.saveSession();

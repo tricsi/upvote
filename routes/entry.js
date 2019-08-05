@@ -43,7 +43,7 @@ router.get('/:id', async (req, res) => {
         message: comment.message,
         createdAt: comment.createdAt.getTime()
       })),
-      votes: entry.Votes.map(vote => ({
+      votes: entry.Votes.filter(vote => vote.result !== null).map(vote => ({
         entry: vote.Entries.filter(item => item.id != entry.id).map(item => ({
           id: item.id,
           login: item.login,
