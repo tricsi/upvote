@@ -8,43 +8,37 @@
     <b-alert :show="error" variant="danger">{{error}}</b-alert>
 
     <form v-if="vote !== null" @submit.prevent="onSubmit" @change="onChange" class="my-3">
-      <b-card-group deck class="mb-3">
+      <b-card-group class="mb-3">
         <EntryCard :data="vote.entries[0]">
-          <b-form-group label="Criteria">
-            <b-form-radio
-              :key="index"
-              v-for="(value, index) in criteria"
-              v-model="result[index]"
-              :value="0"
-            >{{value}}</b-form-radio>
-          </b-form-group>
           <b-form-group label="Comments">
             <b-form-textarea v-model="comments[0]" rows="5"></b-form-textarea>
           </b-form-group>
         </EntryCard>
 
+        <b-card class="text-center" body-class="d-flex justify-content-center align-items-center">
+          <h1>VS</h1>
+          <div slot="footer">
+            <div :key="index" v-for="(value, index) in criteria" class="py-2">
+              <h6>{{ value }}</h6>
+              <input type="range" v-model.number="result[index]" value="0" min="-1" max="1" step="1" />
+            </div>
+          </div>
+        </b-card>
+
         <EntryCard :data="vote.entries[1]">
-          <b-form-group label="Criteria">
-            <b-form-radio
-              :key="index"
-              v-for="(value, index) in criteria"
-              v-model="result[index]"
-              :value="1"
-            >{{value}}</b-form-radio>
-          </b-form-group>
           <b-form-group label="Comments">
             <b-form-textarea v-model="comments[1]" rows="5"></b-form-textarea>
           </b-form-group>
         </EntryCard>
       </b-card-group>
 
-      <div class="col-md-6 mx-auto">
-        <b-button :disabled="!valid" type="submit" variant="primary" block>Submit</b-button>
+      <div class="col-md-4 col-sm-6 mx-auto my-4">
+        <b-button type="submit" variant="primary" block>Submit</b-button>
       </div>
     </form>
 
     <div v-else>
-      <div class="col-md-6 col-sm-8 mx-auto text-center" v-html="content"></div>
+      <div v-html="content" class="col-md-6 col-sm-8 mx-auto text-center"></div>
       <div class="col-md-4 col-sm-6 mx-auto my-4">
         <b-button @click.prevent="onCreate" variant="primary" block>Start Vote</b-button>
       </div>
@@ -60,25 +54,24 @@ import Content from "../../content/Vote.md";
 
 import {
   BButton,
+  BCard,
   BCardGroup,
   BFormGroup,
-  BFormRadio,
   BFormTextarea
 } from "bootstrap-vue";
 
 export default {
   components: {
     BButton,
+    BCard,
     BCardGroup,
     BFormGroup,
-    BFormRadio,
     BFormTextarea,
     EntryCard
   },
 
   data() {
     return {
-      valid: false,
       error: false,
       loading: true,
       comments: null,
@@ -92,11 +85,10 @@ export default {
   async created() {
     const session = JSON.parse(sessionStorage.getItem("vote")) || {
       comments: ["", ""],
-      result: []
+      result: new Array(this.criteria.length).fill(0)
     };
     this.comments = session.comments;
     this.result = session.result;
-    this.validate();
     try {
       const response = await Axios.get("/api/vote");
       this.vote = response.data.data;
@@ -108,10 +100,6 @@ export default {
   },
 
   methods: {
-    validate() {
-      const result = this.result.filter(value => value === 0 || value === 1);
-      this.valid = result.length === this.criteria.length;
-    },
 
     saveSession() {
       sessionStorage.setItem(
@@ -124,7 +112,6 @@ export default {
     },
 
     onChange() {
-      this.validate();
       this.saveSession();
     },
 
@@ -144,9 +131,6 @@ export default {
     },
 
     async onSubmit() {
-      if (!this.valid) {
-        return;
-      }
       this.loading = true;
       try {
         await Axios.patch("/api/vote", {
@@ -154,10 +138,9 @@ export default {
           comments: this.comments
         });
         this.vote = null;
-        this.result = [];
+        this.result = new Array(this.criteria.length).fill(0);
         this.comments = ["", ""];
         this.error = null;
-        this.validate();
         this.saveSession();
       } catch (error) {
         this.error = Config.messages[error.response.data.error];
