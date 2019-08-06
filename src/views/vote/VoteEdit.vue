@@ -1,5 +1,10 @@
 <template>
-  <div v-if="!loading">
+  <div v-if="loading">
+    <div class="d-flex justify-content-center">
+      <b-spinner label="Loading..."></b-spinner>
+    </div>
+  </div>
+  <div v-else>
     <b-alert :show="error" variant="danger">{{error}}</b-alert>
 
     <form v-if="vote !== null" @submit.prevent="onSubmit" @change="onChange" class="my-3">
