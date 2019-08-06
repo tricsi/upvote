@@ -89,24 +89,26 @@ export default {
         name: criteria,
         score: 0
       }));
-      let sum = 0;
       for (const vote of entry.votes) {
         const score = [0, 0];
         for (let i = 0; i < vote.result.length; i++) {
           const id = vote.result[i];
-          if (id === entry.id) {
-            this.criteria[i].score++;
-            score[0]++;
-            sum++;
-            continue;
+          if (!id) {
+            this.criteria[i].score += 1;
+            score[0] += 1;
+            score[1] += 1;
+          } else if (id === entry.id) {
+            this.criteria[i].score += 2;
+            score[0] += 2;
+          } else {
+            score[1] += 2;
           }
-          score[1]++;
         }
         vote.score = score.join(" - ");
       }
       this.criteria.push({
         name: "Total",
-        score: sum
+        score: entry.score
       });
       this.entry = entry;
       this.loading = false;
