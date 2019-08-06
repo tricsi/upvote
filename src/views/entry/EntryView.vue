@@ -1,5 +1,10 @@
 <template>
-  <div v-if="!loading">
+  <div v-if="loading">
+    <div class="d-flex justify-content-center">
+      <b-spinner label="Loading entry..."></b-spinner>
+    </div>
+  </div>
+  <div v-else>
     <div class="row">
       <div class="col-md-6">
         <EntryCard :data="this.entry" class="p-0"></EntryCard>

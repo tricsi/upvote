@@ -1,5 +1,10 @@
 <template>
-  <div v-if="!loading">
+  <div v-if="loading">
+    <div class="d-flex justify-content-center">
+      <b-spinner label="Loading entries..."></b-spinner>
+    </div>
+  </div>
+  <div v-else>
     <b-table :items="items" :fields="fields" striped responsive>
       <template slot="rank" slot-scope="data">{{ data.item.rank || '' }}</template>
       <template slot="title" slot-scope="data">
