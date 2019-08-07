@@ -7,6 +7,13 @@
   <div v-else>
     <b-alert :show="error" variant="danger">{{error}}</b-alert>
 
+    <b-alert variant="success" :show="voted">
+      <div class="d-flex flex-column align-items-center justify-content-center">
+        <h4>Vote added successfully!</h4>
+        <b-button @click.prevent="onCreate" variant="primary" size="sm">Vote Other Games</b-button>
+      </div>
+    </b-alert>
+
     <form v-if="vote !== null" @submit.prevent="onSubmit" @change="onChange" class="my-3">
       <b-card-group class="mb-3">
         <EntryCard :data="vote.entries[0]">
@@ -74,6 +81,7 @@ export default {
     return {
       error: false,
       loading: true,
+      voted: false,
       comments: null,
       result: null,
       vote: null,
@@ -120,6 +128,7 @@ export default {
         return;
       }
       this.loading = true;
+      this.voted = false;
       try {
         const response = await Axios.post("/api/vote");
         this.vote = response.data.data;
@@ -141,6 +150,7 @@ export default {
         this.result = new Array(this.criteria.length).fill(0);
         this.comments = ["", ""];
         this.error = null;
+        this.voted = true;
         this.saveSession();
       } catch (error) {
         this.error = Config.messages[error.response.data.error];
