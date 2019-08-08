@@ -6,6 +6,19 @@ module.exports = {
     "Film Editing",
     "Story",
   ],
+  categories: [
+    "Automotive",
+    "Beauty",
+    "Books",
+    "Clothing",
+    "Computers",
+    "Garden",
+    "Grocery",
+    "Health",
+    "Jewelery",
+    "Kids",
+    "Movies"
+  ],
   messages: {
     error_invalid_code: "Authentication error!",
     error_invalid_user: "Access denied!",

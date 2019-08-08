@@ -6,6 +6,8 @@
         "JWT_SECRET": "itsasecret",
         "DATABASE_URL": "sqlite:db.sqlite",
         "DATABASE_LOG": "true",
+        "VOTE_CLOSED": "true",
+        "VOTE_AVAILABLE": 600,
         "VOTE_EXPIRE": 3600
     }
 }

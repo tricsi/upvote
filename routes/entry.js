@@ -12,6 +12,7 @@ router.get('/', async (req, res) => {
       id: entry.id,
       login: entry.login,
       title: entry.data.title,
+      category: entry.data.category,
       win: entry.win,
       lose: entry.lose,
       score: entry.score,

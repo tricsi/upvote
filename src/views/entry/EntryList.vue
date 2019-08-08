@@ -1,32 +1,59 @@
 <template>
+
   <div v-if="loading">
     <div class="d-flex justify-content-center">
       <b-spinner label="Loading entries..."></b-spinner>
     </div>
   </div>
+
   <div v-else>
-    <b-table :items="items" :fields="fields" striped responsive>
+    <b-form inline class="d-flex">
+      <b-form-input v-model="search" placeholder="Search" class="flex-grow-1 mr-md-2 mb-3" />
+      <b-form-select v-model="category" :options="categories" class="mb-3">
+        <option slot="first" :value="null">All Category</option>
+      </b-form-select>
+    </b-form>
+    <b-table :items="items" :fields="fields" :filter-function="filterTable" filter="true" striped responsive>
       <template slot="rank" slot-scope="data">{{ data.item.rank || '' }}</template>
       <template slot="title" slot-scope="data">
         <router-link :to="{name: 'entry', params:{id: data.item.id}}">{{ data.item.title }}</router-link>
       </template>
     </b-table>
   </div>
+
 </template>
 
 <script>
 import Axios from "axios";
+import {
+  BForm,
+  BFormInput,
+  BFormSelect
+} from "bootstrap-vue";
+import Config from "../../config";
 
 export default {
+
+  components: {
+    BForm,
+    BFormInput,
+    BFormSelect
+  },
+
   data() {
     return {
       loading: true,
       items: null,
       length: 9999,
+      search: "",
+      category: null,
+      categories: Config.categories,
       fields: {
         rank: {
           label: "#",
-          tdClass: "text-right"
+          tdClass: "text-right",
+          thClass: "text-right",
+          thStyle: "width: 1%"
         },
         title: {
           label: "Game"
@@ -34,23 +61,29 @@ export default {
         votes: {
           key: "votes.length",
           label: "Votes",
-          tdClass: "text-center"
+          tdClass: "text-center",
+          thStyle: "width: 1%"
         },
         win: {
           label: "Win",
-          tdClass: "text-center"
+          tdClass: "text-center",
+          thStyle: "width: 1%"
         },
         lose: {
           label: "Lose",
-          tdClass: "text-center"
+          tdClass: "text-center",
+          thStyle: "width: 1%"
         },
         score: {
           label: "Score",
-          tdClass: "text-center"
+          tdClass: "text-center",
+          thStyle: "width: 1%"
         },
         tie: {
-          label: "Tie",
-          tdClass: "text-center"
+          label: "TBS",
+          headerTitle: "Tie Break Score",
+          tdClass: "text-center",
+          thStyle: "width: 1%"
         }
       }
     };
@@ -67,6 +100,18 @@ export default {
   },
 
   methods: {
+
+    filterTable(item) {
+      let result = true;
+      if (this.search) {
+        result = item.title.toLowerCase().includes(this.search.toLowerCase());
+      }
+      if (result && this.category) {
+        result = item.category.includes(this.category);
+      }
+      return result;
+    },
+
     computeTies(data) {
       for (const item1 of data) {
         item1.tie = 0;
