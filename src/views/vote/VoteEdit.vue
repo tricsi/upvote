@@ -1,20 +1,24 @@
 <template>
+
   <div v-if="loading">
     <div class="d-flex justify-content-center">
       <b-spinner label="Loading..."></b-spinner>
     </div>
   </div>
+
   <div v-else>
-    <b-alert :show="error" variant="danger">{{error}}</b-alert>
 
-    <b-alert variant="success" :show="voted">
-      <div class="d-flex flex-column align-items-center justify-content-center">
-        <h4>Vote added successfully!</h4>
-        <b-button @click.prevent="onCreate" variant="primary" size="sm">Vote Other Games</b-button>
+    <b-alert :show="error" variant="danger">{{ error }}</b-alert>
+
+    <div v-if="vote === null">
+      <div v-html="content" class="col-md-6 col-sm-8 mx-auto text-center"></div>
+      <div class="col-md-4 col-sm-6 mx-auto my-4">
+        <b-alert :show="voted" variant="success" class="text-center">Vote added successfully!</b-alert>
+        <b-button @click.prevent="onCreate" variant="primary" block>Start New Vote</b-button>
       </div>
-    </b-alert>
+    </div>
 
-    <form v-if="vote !== null" @submit.prevent="onSubmit" @change="onChange" class="my-3">
+    <form v-else @submit.prevent="onSubmit" @change="onChange" class="my-3">
       <b-card-group class="mb-3">
         <EntryCard :data="vote.entries[0]">
           <b-form-group label="Comments">
@@ -43,14 +47,8 @@
         <b-button type="submit" variant="primary" block>Submit</b-button>
       </div>
     </form>
-
-    <div v-else>
-      <div v-html="content" class="col-md-6 col-sm-8 mx-auto text-center"></div>
-      <div class="col-md-4 col-sm-6 mx-auto my-4">
-        <b-button @click.prevent="onCreate" variant="primary" block>Start Vote</b-button>
-      </div>
-    </div>
   </div>
+
 </template>
 
 <script>
