@@ -1,3 +1,4 @@
+const config = require('../src/config');
 const model = require('../models');
 const express = require('express');
 const router = express.Router();
@@ -13,8 +14,6 @@ router.get('/', async (req, res) => {
       login: entry.login,
       title: entry.data.title,
       category: entry.data.category,
-      win: entry.win,
-      lose: entry.lose,
       score: entry.score,
       votes: entry.Votes.filter(vote => vote.result).map(vote => vote.id)
     }
@@ -39,23 +38,26 @@ router.get('/:id', async (req, res) => {
       id: entry.id,
       login: entry.login,
       score: entry.score,
+      criteria: config.criteria.map(criteria => ({
+        name: criteria,
+        score: 0
+      })),
       comments: entry.Comments.map(comment => ({
         login: comment.login,
         message: comment.message,
         createdAt: comment.createdAt.getTime()
-      })),
-      votes: entry.Votes.filter(vote => vote.result !== null).map(vote => ({
-        entry: vote.Entries.filter(item => item.id != entry.id).map(item => ({
-          id: item.id,
-          login: item.login,
-          title: item.data.title,
-          score: item.score
-        })).pop(),
-        result: vote.result,
-        createdAt: vote.createdAt.getTime(),
-        updatedAt: vote.updatedAt.getTime()
       }))
     };
+    for (const vote of entry.Votes) {
+      for (let i = 0; i < vote.result.length; i++) {
+        const id = vote.result[i];
+        if (!id) {
+          data.criteria[i].score += 1;
+        } else if (id === entry.id) {
+          data.criteria[i].score += 2;
+        }
+      }
+    }
   }
   res.send({ data: data });
 });

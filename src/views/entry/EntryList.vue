@@ -64,16 +64,6 @@ export default {
           tdClass: "text-center",
           thStyle: "width: 1%"
         },
-        win: {
-          label: "Win",
-          tdClass: "text-center",
-          thStyle: "width: 1%"
-        },
-        lose: {
-          label: "Lose",
-          tdClass: "text-center",
-          thStyle: "width: 1%"
-        },
         score: {
           label: "Score",
           tdClass: "text-center",
