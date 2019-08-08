@@ -27,7 +27,7 @@
         </EntryCard>
 
         <b-card class="text-center" body-class="d-flex justify-content-center align-items-center">
-          <h1>VS</h1>
+          <h1>OR</h1>
           <div slot="footer">
             <div :key="index" v-for="(value, index) in criteria" class="py-2">
               <h6>{{ value }}</h6>

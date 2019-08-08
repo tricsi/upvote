@@ -1,4 +1,4 @@
-# How to Vote
+# How to Upvote?
 
 **Take your time**\
 Spend at least 5 minute to play each game. You can find great ideas everywhere.

@@ -4,7 +4,7 @@
   <div v-else>
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
       <div class="container">
-        <router-link to="/" class="navbar-brand mr-1">BattleVote</router-link>
+        <router-link to="/" class="navbar-brand mr-1">Upvote</router-link>
         <ul class="navbar-nav ml-5">
           <li class="nav-item">
             <router-link :to="{name: 'entries'}" active-class="active" class="nav-link">

@@ -1,5 +1,5 @@
 {
-  "name": "battlevote",
+  "name": "upvote",
   "version": "1.0.0",
   "description": "Vote system for game jams",
   "author": "@CsabaCsecskedi",
@@ -70,7 +70,6 @@
   "keywords": [
     "game",
     "jam",
-    "battle",
     "vote"
   ],
   "license": "MIT"
