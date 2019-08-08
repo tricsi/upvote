@@ -94,31 +94,30 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   Vote.prototype.saveResult = async function (result, length) {
-    if (!(result instanceof Array) || result.length !== length) {
+    if (
+      !(result instanceof Array) ||
+      result.length !== length ||
+      result.filter(i => i === -1 || i === 0 || i === 1).length !== length
+    ) {
       throw new Error('error_invalid_result_type');
     }
     const increment = [
-      {
-        score: result.filter(value => value === 0).length
-      },
-      {
-        score: result.filter(value => value === 1).length
-      }
+      { score: result.reduce((score, val) => score - val + 1, 0) },
+      { score: result.reduce((score, val) => score + val + 1, 0) }
     ];
-    if (increment[0].score + increment[1].score !== length) {
-      throw new Error('error_invalid_result_value');
-    }
-    if (increment[0].score > increment[1].score) {
-      increment[0].win = 1;
-      increment[1].lose = 1;
-    }
-    if (increment[0].score < increment[1].score) {
-      increment[1].win = 1;
-      increment[0].lose = 1;
+    if (increment[0].score !== increment[1].score) {
+      if (increment[0].score > increment[1].score) {
+        increment[0].win = 1;
+        increment[1].lose = 1;
+      }
+      if (increment[0].score < increment[1].score) {
+        increment[1].win = 1;
+        increment[0].lose = 1;
+      }
     }
     return await sequelize.transaction(async t => {
       const entries = await this.getEntries();
-      this.result = result.map(i => entries[i].id);
+      this.result = result.map(i => i ? entries[i < 0 ? 0 : 1].id : 0);
       await this.save({ transaction: t });
       await entries[0].increment(increment[0], { transaction: t });
       await entries[1].increment(increment[1], { transaction: t });
