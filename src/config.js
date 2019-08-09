@@ -1,23 +1,17 @@
 module.exports = {
   criteria: [
-    "Actors",
-    "Cinematography",
-    "Direction",
-    "Film Editing",
-    "Story",
+    "innovation",
+    "fun",
+    "theme",
+    "gameplay",
+    "graphics",
+    "technical"
   ],
   categories: [
-    "Automotive",
-    "Beauty",
-    "Books",
-    "Clothing",
-    "Computers",
-    "Garden",
-    "Grocery",
-    "Health",
-    "Jewelery",
-    "Kids",
-    "Movies"
+    "desktop",
+    "mobile",
+    "server",
+    "webxr"
   ],
   messages: {
     error_invalid_code: "Authentication error!",
