@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
-const VOTE_CLOSED = JSON.parse(process.env.VOTE_CLOSED) ? true : false;
+const VOTE_CLOSED = process.env.VOTE_CLOSED
+  ? JSON.parse(process.env.VOTE_CLOSED)
+  : true;
 
 module.exports = function (onClose = null) {
   return function (req, res, next) {
