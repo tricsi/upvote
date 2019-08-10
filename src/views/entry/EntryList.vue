@@ -80,13 +80,17 @@ export default {
   },
 
   async created() {
-    const response = await Axios.get("/api/entry");
-    const data = response.data;
-    this.computeTies(data);
-    this.sortByScore(data);
-    this.computeRank(data);
-    this.items = data;
-    this.loading = false;
+    try {
+      const response = await Axios.get("/api/entry");
+      const data = response.data;
+      this.computeTies(data);
+      this.sortByScore(data);
+      this.computeRank(data);
+      this.items = data;
+      this.loading = false;
+    } catch (error) {
+      this.$router.replace("/");
+    }
   },
 
   methods: {

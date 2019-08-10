@@ -56,18 +56,18 @@ export default {
 
   methods: {
     async fetchData() {
-      this.loading = true;
-      const response = await Axios.get(`/api/entry/${this.id}`);
-      const entry = response.data.data;
-      if (entry) {
+      try {
+        this.loading = true;
+        const response = await Axios.get(`/api/entry/${this.id}`);
+        const entry = response.data.data;
         entry.criteria.push({
           name: "Total",
           score: entry.score
         });
         this.entry = entry;
         this.loading = false;
-      } else {
-        this.$router.replace("/");
+      } catch (error) {
+        this.$router.replace("/entries");
       }
     }
   },

@@ -36,14 +36,11 @@ export default {
 
   async created() {
     let path = "/auth";
-    if (location.search) {
-      path += location.search;
-    }
     try {
-      const response = await Axios.get(path);
-      if (response.data.url) {
-        this.url = response.data.url;
-      } else {
+      let response = await Axios.get(path);
+      this.url = response.data.url;
+      if (location.search) {
+        response = await Axios.get(path + location.search);
         this.signIn(response.data);
       }
     } catch (error) {

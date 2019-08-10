@@ -100,6 +100,9 @@ export default {
       this.vote = response.data.data;
       this.error = null;
     } catch (error) {
+      if (error.response.status === 401) {
+        this.$router.replace("/entries");
+      }
       this.vote = null;
     }
     this.loading = false;

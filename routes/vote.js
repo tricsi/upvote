@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const expire = parseInt(process.env.VOTE_EXPIRE) || 0;
 
-router.get('/', auth, async (req, res) => {
+router.get('/', auth(false), async (req, res) => {
   const vote = await model.Vote.findActive(req.user.login);
   if (!vote) {
     throw new Error("error_no_active_vote");
@@ -13,7 +13,7 @@ router.get('/', auth, async (req, res) => {
   res.send({ data: vote.getData() });
 });
 
-router.post('/', auth, async (req, res) => {
+router.post('/', auth(false), async (req, res) => {
   const login = req.user.login;
   let vote = await model.Vote.findActive(login);
   if (expire && !vote && await model.Vote.pickExpired(login, expire)) {
@@ -28,7 +28,7 @@ router.post('/', auth, async (req, res) => {
   res.send({ data: vote.getData() });
 });
 
-router.patch('/', auth, async (req, res) => {
+router.patch('/', auth(false), async (req, res) => {
   const login = req.user.login;
   const vote = await model.Vote.findActive(login);
   if (!vote) {

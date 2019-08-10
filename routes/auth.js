@@ -1,5 +1,6 @@
 const Axios = require('axios');
 const jwt = require('jsonwebtoken');
+const model = require('../models')
 const express = require('express');
 const router = express.Router();
 
@@ -26,6 +27,15 @@ router.get('/', async (req, res) => {
   });
   if (!resp.data.id) {
     throw new Error('error_invalid_user');
+  }
+
+  const entry = await model.Entry.findOne({
+    where: {
+      login: resp.data.login
+    }
+  });
+  if (!entry) {
+    throw new Error('error_no_entry_found');
   }
 
   const jwt_token = jwt.sign({
