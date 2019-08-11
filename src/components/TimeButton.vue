@@ -40,7 +40,8 @@ export default {
                 this.active = false;
             } else if (available && available > time) {
                 const sec = Math.round((available - time) / 1000);
-                this.label = `${Math.floor(sec / 60)}:${sec % 60}`;
+                const min = Math.floor(sec / 60);
+                this.label = min ? `${min}:${sec % 60}` : sec % 60;
                 this.active = false;
             } else {
                 this.label = "Submit";

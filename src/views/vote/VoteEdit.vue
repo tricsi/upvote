@@ -47,7 +47,6 @@
         <TimeButton
           type="submit"
           class="btn btn-primary btn-block"
-          :expire="vote.expireAt"
           :available="vote.availableAt"
           >Submit</TimeButton>
       </div>
