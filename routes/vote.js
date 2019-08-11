@@ -4,6 +4,7 @@ const config = require('../src/config');
 const express = require('express');
 
 const router = express.Router();
+const VOTE_ROUNDS = parseInt(process.env.VOTE_ROUNDS) || 0;
 const VOTE_EXPIRE = parseInt(process.env.VOTE_EXPIRE) || 0;
 const VOTE_AVAILABLE = parseInt(process.env.VOTE_AVAILABLE) || 0;
 
@@ -34,7 +35,7 @@ router.post('/', auth(false), async (req, res) => {
   if (VOTE_EXPIRE && !vote && await model.Vote.pickExpired(login, VOTE_EXPIRE)) {
     vote = await model.Vote.findActive(login);
   }
-  if (!vote && await model.Vote.createActive(login)) {
+  if (!vote && await model.Vote.createActive(VOTE_ROUNDS, login)) {
     vote = await model.Vote.findActive(login);
   }
   if (!vote) {

@@ -8,6 +8,7 @@
         "DATABASE_LOG": "true",
         "VOTE_CLOSED": "true",
         "VOTE_AVAILABLE": 600,
-        "VOTE_EXPIRE": 3600
+        "VOTE_EXPIRE": 3600,
+        "VOTE_ROUNDS": 9
     }
 }

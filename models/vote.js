@@ -63,9 +63,9 @@ module.exports = (sequelize, DataTypes) => {
     });
   }
 
-  Vote.createActive = async function (login, mine, same, again) {
+  Vote.createActive = async function (maxRound, login, mine, same, again) {
     return await sequelize.transaction(async t => {
-      const entries = await sequelize.models.Entry.findAllQueued({ transaction: t });
+      const entries = await sequelize.models.Entry.findAllQueued(maxRound, { transaction: t });
       let i = 0;
       while (i < entries.length && (
         (!mine && entries[i].login === login) ||
