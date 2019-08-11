@@ -44,7 +44,11 @@
       </b-card-group>
 
       <div class="col-md-4 col-sm-6 mx-auto my-4">
-        <b-button type="submit" variant="primary" block>Submit</b-button>
+        <TimeButton
+          type="submit"
+          class="btn btn-primary btn-block"
+          :available="vote.availableAt"
+          >Submit</TimeButton>
       </div>
     </form>
   </div>
@@ -53,6 +57,7 @@
 
 <script>
 import EntryCard from "../../components/EntryCard";
+import TimeButton from "../../components/TimeButton";
 import Config from "../../config";
 import Axios from "axios";
 import Content from "../../content/Vote.md";
@@ -72,7 +77,8 @@ export default {
     BCardGroup,
     BFormGroup,
     BFormTextarea,
-    EntryCard
+    EntryCard,
+    TimeButton
   },
 
   data() {

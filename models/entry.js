@@ -1,3 +1,6 @@
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 module.exports = (sequelize, DataTypes) => {
 
   const Entry = sequelize.define('Entry', {
@@ -36,8 +39,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  Entry.findAllQueued = async function (config) {
+  Entry.findAllQueued = async function (maxRound, config) {
+    const where = {};
+    if (maxRound) {
+      where.round = {[Op.lt]: maxRound};
+    }
     return Entry.findAll({
+      where: where,
       include: {
         model: sequelize.models.Vote
       },
