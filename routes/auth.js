@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken');
 const model = require('../models')
 const express = require('express');
 const router = express.Router();
+const AUTH_CLOSED = process.env.AUTH_CLOSED
+  ? JSON.parse(process.env.AUTH_CLOSED)
+  : true;
 
 router.get('/', async (req, res) => {
   const code = req.query.code;
@@ -34,7 +37,7 @@ router.get('/', async (req, res) => {
       login: resp.data.login
     }
   });
-  if (!entry) {
+  if (!entry && AUTH_CLOSED) {
     throw new Error('error_no_entry_found');
   }
 
