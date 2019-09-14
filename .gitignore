@@ -2,7 +2,6 @@
 dist
 node_modules
 nodemon.json
-package-lock.json
 
 # local env files
 .env.local

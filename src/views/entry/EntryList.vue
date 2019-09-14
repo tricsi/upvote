@@ -14,8 +14,7 @@
       </b-form-select>
     </b-form>
     <b-table :items="items" :fields="fields" :filter-function="filterTable" filter="true" striped responsive>
-      <template slot="rank" slot-scope="data">{{ data.item.rank || '' }}</template>
-      <template slot="title" slot-scope="data">
+      <template v-slot:cell(title)="data">
         <router-link :to="{name: 'entry', params:{id: data.item.id}}">{{ data.item.title }}</router-link>
       </template>
     </b-table>
@@ -48,34 +47,39 @@ export default {
       search: "",
       category: null,
       categories: Config.categories,
-      fields: {
-        rank: {
+      fields: [
+        {
+          key: "rank",
           label: "#",
           tdClass: "text-right",
           thClass: "text-right",
-          thStyle: "width: 1%"
+          thStyle: "width: 1%",
+          formatter: value => value || ''
         },
-        title: {
+        {
+          key: "title",
           label: "Game"
         },
-        votes: {
+        {
           key: "votes.length",
           label: "Votes",
           tdClass: "text-center",
           thStyle: "width: 1%"
         },
-        score: {
+        {
+          key: "score",
           label: "Score",
           tdClass: "text-center",
           thStyle: "width: 1%"
         },
-        tie: {
+        {
+          key: "tie",
           label: "TBS",
           headerTitle: "Tie Break Score",
           tdClass: "text-center",
           thStyle: "width: 1%"
         }
-      }
+      ]
     };
   },
 

@@ -11,7 +11,7 @@ module.exports = {
     "desktop",
     "mobile",
     "server",
-    "webxr"
+    "web monetization"
   ],
   messages: {
     error_invalid_code: "Authentication error!",

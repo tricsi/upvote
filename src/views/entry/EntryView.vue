@@ -40,16 +40,18 @@ export default {
   data() {
     return {
       loading: true,
-      fields: {
-        name: {
+      fields: [
+        {
+          key: "name",
           label: "Results"
         },
-        score: {
+        {
+          key: "score",
           label: "Score",
           thClass: "text-right",
           tdClass: "text-right"
         }
-      },
+      ],
       entry: null
     };
   },
