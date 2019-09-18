@@ -2,13 +2,10 @@ const Axios = require('axios');
 const jwt = require('jsonwebtoken');
 const model = require('../models')
 const express = require('express');
-const Op = require('sequelize').Op;
 const router = express.Router();
 const AUTH_CLOSED = process.env.AUTH_CLOSED
   ? JSON.parse(process.env.AUTH_CLOSED)
   : true;
-
-const teamUsers = process.env.TEAM_USERS ? JSON.parse(process.env.TEAM_USERS) : {};
 
 router.get('/', async (req, res) => {
   const code = req.query.code;
@@ -37,9 +34,7 @@ router.get('/', async (req, res) => {
 
   const entry = await model.Entry.findOne({
     where: {
-      login: {
-        [Op.or]: [resp.data.login].concat(teamUsers[resp.data.login] ? [teamUsers[resp.data.login]] : [])
-      }
+      login: resp.data.login
     }
   });
   if (!entry && AUTH_CLOSED) {
