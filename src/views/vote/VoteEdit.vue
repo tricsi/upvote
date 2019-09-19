@@ -16,6 +16,8 @@
         <b-alert :show="voted" variant="success" class="text-center">Vote added successfully!</b-alert>
         <b-button @click.prevent="onCreate" variant="primary" block>Start New Vote</b-button>
       </div>
+      <hr>
+      <Statistics />
     </div>
 
     <form v-else @submit.prevent="onSubmit" @change="onChange" class="my-3">
@@ -58,6 +60,7 @@
 <script>
 import EntryCard from "../../components/EntryCard";
 import TimeButton from "../../components/TimeButton";
+import Statistics from "../../components/Statistics";
 import Config from "../../config";
 import Axios from "axios";
 import Content from "../../content/Vote.md";
@@ -78,7 +81,8 @@ export default {
     BFormGroup,
     BFormTextarea,
     EntryCard,
-    TimeButton
+    TimeButton,
+    Statistics
   },
 
   data() {

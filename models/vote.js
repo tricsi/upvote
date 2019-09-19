@@ -93,6 +93,16 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
+  Vote.findAllByLogin = async function (login) {
+    const votes = await Vote.findAll({
+      where: {
+        login: login,
+        result: {[Op.not]: null}
+      }
+    });
+    return votes;
+  };
+
   Vote.prototype.saveResult = async function (result, length) {
     if (
       !(result instanceof Array) ||
