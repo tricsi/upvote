@@ -15,6 +15,7 @@ app.use('/auth', require('./routes/auth'));
 app.use('/api/ping', require('./routes/ping'));
 app.use('/api/entry', require('./routes/entry'));
 app.use('/api/vote', require('./routes/vote'));
+app.use('/api/stats', require('./routes/stats'));
 app.get('/*', (req, res) => {
   res.sendFile(__dirname + '/dist/index.html');
 });
