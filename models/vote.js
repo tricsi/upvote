@@ -23,9 +23,6 @@ module.exports = (sequelize, DataTypes) => {
         model: sequelize.models.Entry
       }
     });
-    if (vote) {
-      vote.Entries.sort((a, b) => a.seed - b.seed);
-    }
     return vote;
   };
 

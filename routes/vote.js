@@ -41,12 +41,14 @@ router.post('/', auth(false), async (req, res) => {
   if (!vote) {
     throw new Error("error_no_vote_left");
   }
+  vote.Entries.sort((a, b) => a.seed - b.seed);
   res.send({ data: getData(vote) });
 });
 
 router.patch('/', auth(false), async (req, res) => {
   const login = req.user.login;
   const vote = await model.Vote.findActive(login);
+  vote.Entries.sort((a, b) => a.seed - b.seed);
   if (!vote) {
     throw new Error("error_no_active_vote");
   }
