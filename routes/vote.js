@@ -12,26 +12,49 @@ function getTime(date, time) {
   return time ? time * 1000 + date.getTime() : false;
 }
 
-async function getData(vote) {
+function getData(vote) {
   vote.Entries.sort((a, b) => a.seed - b.seed);
-  const comments = await vote.findComments();
   return {
     login: vote.login,
     result: vote.result,
     entries: vote.Entries.map(entry => ({...entry.data, id: entry.id})),
-    comments: comments.map(comment => ({id: comment.EntryId, message: comment.message})),
     createdAt: vote.createdAt.getTime(),
     availableAt: getTime(vote.createdAt, VOTE_AVAILABLE),
     expireAt: getTime(vote.createdAt, VOTE_EXPIRE)
   };
 }
 
+async function getDataWithComments(vote) {
+  const data = getData(vote);
+  const comments = await vote.findComments();
+  data.comments = comments.map(comment => ({
+    id: comment.EntryId,
+    message: comment.message,
+  }));
+  return data;
+}
+
+router.get('/all', auth(false), async (req, res) => {
+  const votes = await model.Vote.findAll({
+    where: {
+      login: req.user.login,
+    },
+    include: {
+      model: model.Entry
+    },
+    order: [
+      ["updatedAt", "DESC"]
+    ]
+  });
+  res.send({ data: votes.map(vote => getData(vote)) });
+});
+
 router.get('/', auth(false), async (req, res) => {
   const vote = await model.Vote.findActive(req.user.login);
   if (!vote) {
     throw new Error("error_no_active_vote");
   }
-  res.send({ data: await getData(vote) });
+  res.send({ data: await getDataWithComments(vote) });
 });
 
 router.get('/:id', auth(false), async (req, res) => {
@@ -47,7 +70,7 @@ router.get('/:id', auth(false), async (req, res) => {
   if (!vote) {
     return res.status('404').send({ error: 'error_vote_not_found' });
   }
-  res.send({ data: await getData(vote) });
+  res.send({ data: await getDataWithComments(vote) });
 });
 
 router.post('/', auth(false), async (req, res) => {
@@ -62,7 +85,7 @@ router.post('/', auth(false), async (req, res) => {
   if (!vote) {
     throw new Error("error_no_vote_left");
   }
-  res.send({ data: getData(vote) });
+  res.send({ data: await getDataWithComments(vote) });
 });
 
 router.patch('/', auth(false), async (req, res) => {
