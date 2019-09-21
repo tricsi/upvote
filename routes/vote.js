@@ -38,7 +38,7 @@ router.get('/:id', auth(false), async (req, res) => {
   const vote = await model.Vote.findOne({
     where: {
       id: req.params.id,
-      // login: req.user.login,
+      login: req.user.login,
     },
     include: {
       model: model.Entry
