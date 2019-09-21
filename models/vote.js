@@ -135,6 +135,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     return await sequelize.transaction(async t => {
       const entries = await this.getEntries();
+      entries.sort((a, b) => a.seed - b.seed);
       this.result = result.map(i => i ? entries[i < 0 ? 0 : 1].id : 0);
       await this.save({ transaction: t });
       await entries[0].increment(increment[0], { transaction: t });

@@ -15,6 +15,7 @@ function getTime(date, time) {
 function getData(vote) {
   vote.Entries.sort((a, b) => a.seed - b.seed);
   return {
+    id: vote.id,
     login: vote.login,
     result: vote.result,
     entries: vote.Entries.map(entry => ({...entry.data, id: entry.id})),
@@ -91,7 +92,6 @@ router.post('/', auth(false), async (req, res) => {
 router.patch('/', auth(false), async (req, res) => {
   const login = req.user.login;
   const vote = await model.Vote.findActive(login);
-  vote.Entries.sort((a, b) => a.seed - b.seed);
   if (!vote) {
     throw new Error("error_no_active_vote");
   }
@@ -101,6 +101,7 @@ router.patch('/', auth(false), async (req, res) => {
   await vote.saveResult(req.body.result, config.criteria.length);
   if (req.body.comments instanceof Array) {
     const entries = await vote.getEntries();
+    entries.sort((a, b) => a.seed - b.seed);
     entries.forEach(async (entry, i) => {
       const message = typeof req.body.comments[i] === 'string'
         ? req.body.comments[i].trim()
