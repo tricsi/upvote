@@ -6,6 +6,9 @@ const router = express.Router();
 const AUTH_CLOSED = process.env.AUTH_CLOSED
   ? JSON.parse(process.env.AUTH_CLOSED)
   : true;
+const AUTH_ADMIN = process.env.AUTH_ADMIN
+  ? process.env.AUTH_ADMIN.split(',')
+  : [];
 
 router.get('/', async (req, res) => {
   const code = req.query.code;
@@ -37,7 +40,7 @@ router.get('/', async (req, res) => {
       login: resp.data.login
     }
   });
-  if (!entry && AUTH_CLOSED) {
+  if (!entry && AUTH_CLOSED && !AUTH_ADMIN.includes(resp.data.login)) {
     throw new Error('error_no_entry_found');
   }
 

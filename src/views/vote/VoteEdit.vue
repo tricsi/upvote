@@ -47,10 +47,16 @@
 
       <div class="col-md-4 col-sm-6 mx-auto my-4">
         <TimeButton
+          v-if="!id"
           type="submit"
           class="btn btn-primary btn-block"
           :available="vote.availableAt"
           >Submit</TimeButton>
+        <div class="d-flex" v-else>
+          <b-button variant="primary" :to="{ name: 'vote', params:{ id: parseInt(id) - 1}}">&lt;prev</b-button>
+          <b-button variant="primary" type="submit" class="btn-block mx-1">switch</b-button>
+          <b-button variant="primary" :to="{ name: 'vote', params:{ id: parseInt(id) + 1}}">next&gt;</b-button>
+        </div>
       </div>
     </form>
   </div>
@@ -85,6 +91,8 @@ export default {
     Statistics
   },
 
+  props: ["id"],
+
   data() {
     return {
       error: false,
@@ -97,28 +105,29 @@ export default {
       content: Content
     };
   },
-
-  async created() {
-    const session = JSON.parse(sessionStorage.getItem("vote")) || {
-      comments: ["", ""],
-      result: new Array(this.criteria.length).fill(0)
-    };
-    this.comments = session.comments;
-    this.result = session.result;
-    try {
-      const response = await Axios.get("/api/vote");
-      this.vote = response.data.data;
-      this.error = null;
-    } catch (error) {
-      if (error.response.status === 401) {
-        this.$router.replace("/entries");
-      }
-      this.vote = null;
-    }
-    this.loading = false;
-  },
-
+  
   methods: {
+
+    async fetchData() {
+      const session = JSON.parse(sessionStorage.getItem("vote")) || {
+        comments: ["", ""],
+        result: new Array(this.criteria.length).fill(0)
+      };
+      this.comments = session.comments;
+      this.result = session.result;
+      try {
+        const response = await Axios.get(`/api/vote/${this.id}`);
+        this.vote = response.data.data;
+        this.onLoad();
+        this.error = null;
+      } catch (error) {
+        if (error.response.status === 401) {
+          this.$router.replace("/entries");
+        }
+        this.vote = null;
+      }
+      this.loading = false;
+    },
 
     saveSession() {
       sessionStorage.setItem(
@@ -128,6 +137,27 @@ export default {
           comments: this.comments
         })
       );
+    },
+
+    onLoad() {
+      const entries = this.vote.entries;
+      if (this.vote.result) {
+        this.result = this.vote.result.map(id => {
+          if (id === entries[0].id) return -1;
+          if (id === entries[1].id) return 1;
+          return 0;
+        });
+      }
+      if (this.vote.comments) {
+        for (const comment of this.vote.comments) {
+          if (comment.id === entries[0].id) {
+            this.comments[0] = comment.message;
+          }
+          if (comment.id === entries[1].id) {
+            this.comments[1] = comment.message;
+          }
+        }
+      }
     },
 
     onChange() {
@@ -153,21 +183,35 @@ export default {
     async onSubmit() {
       this.loading = true;
       try {
-        await Axios.patch("/api/vote", {
+        const response = await Axios.patch(`/api/vote/${this.id}`, {
           result: this.result,
           comments: this.comments
         });
-        this.vote = null;
-        this.result = new Array(this.criteria.length).fill(0);
-        this.comments = ["", ""];
-        this.error = null;
-        this.voted = true;
-        this.saveSession();
+        if (this.id) {
+          this.vote = response.data.data;
+          this.onLoad();
+        } else {
+          this.vote = null;
+          this.result = new Array(this.criteria.length).fill(0);
+          this.comments = ["", ""];
+          this.error = null;
+          this.voted = true;
+          this.saveSession();
+        }
       } catch (error) {
         this.error = Config.messages[error.response.data.error];
       }
       this.loading = false;
     }
+  },
+
+  created() {
+    this.fetchData();
+  },
+
+  watch: {
+    $route: "fetchData"
   }
+
 };
 </script>

@@ -4,10 +4,12 @@ const config = require('../src/config');
 const express = require('express');
 
 const router = express.Router();
-const AUTH_ADMIN = process.env.AUTH_ADMIN || null;
 const VOTE_ROUNDS = parseInt(process.env.VOTE_ROUNDS) || 0;
 const VOTE_EXPIRE = parseInt(process.env.VOTE_EXPIRE) || 0;
 const VOTE_AVAILABLE = parseInt(process.env.VOTE_AVAILABLE) || 0;
+const AUTH_ADMIN = process.env.AUTH_ADMIN
+  ? process.env.AUTH_ADMIN.split(',')
+  : [];
 
 function getTime(date, time) {
   return time ? time * 1000 + date.getTime() : false;
@@ -61,7 +63,7 @@ router.get('/', auth(false), async (req, res) => {
 
 router.get('/:id', auth(), async (req, res) => {
   const where = { id: req.params.id };
-  if (!AUTH_ADMIN || req.user.login !== AUTH_ADMIN) {
+  if (!AUTH_ADMIN.includes(req.user.login)) {
     where.login = req.user.login;
   }
   const vote = await model.Vote.findOne({
@@ -77,7 +79,7 @@ router.get('/:id', auth(), async (req, res) => {
 });
 
 router.patch('/:id', auth(), async (req, res) => {
-  if (!AUTH_ADMIN || req.user.login !== AUTH_ADMIN) {
+  if (!AUTH_ADMIN.includes(req.user.login)) {
     return res.status('401').send({ error: 'error_invalid_token' });
   }
   const vote = await model.Vote.findOne({
