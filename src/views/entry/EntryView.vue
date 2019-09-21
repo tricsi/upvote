@@ -19,7 +19,7 @@
         <b-card-text>{{ comment.message }}</b-card-text>
         <div slot="footer">
           <i class="float-right">{{ new Intl.DateTimeFormat('en-US').format(new Date(comment.createdAt)) }}</i>
-          <b-img :src="`https://github.com/${comment.login}.png?size=26`" :alt="comment.login" rounded />
+          <b-img :src="`https://github.com/${comment.login}.png?size=26`" width="26" :alt="comment.login" rounded />
           <a :href="`https://github.com/${comment.login}`" class="ml-1">{{ comment.login }}</a>
         </div>
       </b-card>

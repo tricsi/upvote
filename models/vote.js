@@ -100,6 +100,17 @@ module.exports = (sequelize, DataTypes) => {
     return votes;
   };
 
+  Vote.prototype.findComments = async function () {
+    const ids = this.Entries.map(entry => entry.id);
+    const result = await sequelize.models.Comment.findAll({
+      where: {
+        login: this.login,
+        EntryId: ids,
+      }
+    });
+    return result;
+  }
+
   Vote.prototype.saveResult = async function (result, length) {
     if (
       !(result instanceof Array) ||

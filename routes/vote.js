@@ -12,9 +12,14 @@ function getTime(date, time) {
   return time ? time * 1000 + date.getTime() : false;
 }
 
-function getData(vote) {
+async function getData(vote) {
+  vote.Entries.sort((a, b) => a.seed - b.seed);
+  const comments = await vote.findComments();
   return {
-    entries: vote.Entries.map(entry => entry.data),
+    login: vote.login,
+    result: vote.result,
+    entries: vote.Entries.map(entry => ({...entry.data, id: entry.id})),
+    comments: comments.map(comment => ({id: comment.EntryId, message: comment.message})),
     createdAt: vote.createdAt.getTime(),
     availableAt: getTime(vote.createdAt, VOTE_AVAILABLE),
     expireAt: getTime(vote.createdAt, VOTE_EXPIRE)
@@ -26,7 +31,23 @@ router.get('/', auth(false), async (req, res) => {
   if (!vote) {
     throw new Error("error_no_active_vote");
   }
-  res.send({ data: getData(vote) });
+  res.send({ data: await getData(vote) });
+});
+
+router.get('/:id', auth(false), async (req, res) => {
+  const vote = await model.Vote.findOne({
+    where: {
+      id: req.params.id,
+      // login: req.user.login,
+    },
+    include: {
+      model: model.Entry
+    }
+  });
+  if (!vote) {
+    return res.status('404').send({ error: 'error_vote_not_found' });
+  }
+  res.send({ data: await getData(vote) });
 });
 
 router.post('/', auth(false), async (req, res) => {
@@ -41,7 +62,6 @@ router.post('/', auth(false), async (req, res) => {
   if (!vote) {
     throw new Error("error_no_vote_left");
   }
-  vote.Entries.sort((a, b) => a.seed - b.seed);
   res.send({ data: getData(vote) });
 });
 
