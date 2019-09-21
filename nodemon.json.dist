@@ -6,6 +6,7 @@
         "JWT_SECRET": "itsasecret",
         "DATABASE_URL": "sqlite:db.sqlite",
         "DATABASE_LOG": "true",
+        "AUTH_ADMIN": "tricsi",
         "AUTH_CLOSED": "false",
         "VOTE_CLOSED": "true",
         "VOTE_AVAILABLE": 600,

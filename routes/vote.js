@@ -4,6 +4,7 @@ const config = require('../src/config');
 const express = require('express');
 
 const router = express.Router();
+const AUTH_ADMIN = process.env.AUTH_ADMIN || null;
 const VOTE_ROUNDS = parseInt(process.env.VOTE_ROUNDS) || 0;
 const VOTE_EXPIRE = parseInt(process.env.VOTE_EXPIRE) || 0;
 const VOTE_AVAILABLE = parseInt(process.env.VOTE_AVAILABLE) || 0;
@@ -58,12 +59,13 @@ router.get('/', auth(false), async (req, res) => {
   res.send({ data: await getDataWithComments(vote) });
 });
 
-router.get('/:id', auth(false), async (req, res) => {
+router.get('/:id', auth(), async (req, res) => {
+  const where = { id: req.params.id };
+  if (!AUTH_ADMIN || req.user.login !== AUTH_ADMIN) {
+    where.login = req.user.login;
+  }
   const vote = await model.Vote.findOne({
-    where: {
-      id: req.params.id,
-      login: req.user.login,
-    },
+    where,
     include: {
       model: model.Entry
     }
@@ -72,6 +74,38 @@ router.get('/:id', auth(false), async (req, res) => {
     return res.status('404').send({ error: 'error_vote_not_found' });
   }
   res.send({ data: await getDataWithComments(vote) });
+});
+
+router.patch('/:id', auth(), async (req, res) => {
+  if (!AUTH_ADMIN || req.user.login !== AUTH_ADMIN) {
+    return res.status('401').send({ error: 'error_invalid_token' });
+  }
+  const vote = await model.Vote.findOne({
+    where: { id: req.params.id },
+    include: { model: model.Entry }
+  });
+  if (!vote) {
+    return res.status('404').send({ error: 'error_vote_not_found' });
+  }
+  const entries = vote.Entries;
+  vote.result = vote.result.map(id => {
+    if (id === entries[0].id) return entries[1].id;
+    if (id === entries[1].id) return entries[0].id;
+    return 0;
+  });
+  await vote.save();
+  const data = getData(vote);
+  const comments = await vote.findComments();
+  data.comments = [];
+  for (const comment of comments) {
+    comment.EntryId = comment.EntryId === entries[0].id ? entries[1].id : entries[0].id;
+    await comment.save();
+    data.comments.push({
+      id: comment.EntryId,
+      message: comment.message,
+    });
+  }
+  res.send({ data });
 });
 
 router.post('/', auth(false), async (req, res) => {
