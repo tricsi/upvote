@@ -108,6 +108,10 @@ export default {
   
   methods: {
 
+    url() {
+      return this.id ? `/api/vote/${this.id}` : `/api/vote`
+    },
+
     async fetchData() {
       const session = JSON.parse(sessionStorage.getItem("vote")) || {
         comments: ["", ""],
@@ -116,7 +120,7 @@ export default {
       this.comments = session.comments;
       this.result = session.result;
       try {
-        const response = await Axios.get(`/api/vote/${this.id}`);
+        const response = await Axios.get(this.url());
         this.vote = response.data.data;
         this.onLoad();
         this.error = null;
@@ -183,7 +187,7 @@ export default {
     async onSubmit() {
       this.loading = true;
       try {
-        const response = await Axios.patch(`/api/vote/${this.id}`, {
+        const response = await Axios.patch(this.url(), {
           result: this.result,
           comments: this.comments
         });
