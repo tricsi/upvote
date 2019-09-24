@@ -13,7 +13,7 @@ DATABASE_URL=sqlite:db.sqlite npm run import
 ```
 
 ### Setup nodemon.json dev configuration
-- Rename `nodemon.json.prod` to `nodemon.json`
+- Rename `nodemon.json.dist` to `nodemon.json`
 - Set `DATABASE_URL` as `sqlite:db.sqlite`
 - Set `GITHUB_ID` and `GITHUB_SECRET`:
   - Create an application on https://github.com/settings/apps
