@@ -35,13 +35,14 @@ export default {
             const time = new Date().getTime();
             const expire = parseInt(this.expire) || 0;
             const available = parseInt(this.available) || 0;
+            const zeroPad = n => (n < 10 ? '0' : '') + n;
             if (expire && expire < time) {
                 this.label = "Expired";
                 this.active = false;
             } else if (available && available > time) {
                 const sec = Math.round((available - time) / 1000);
                 const min = Math.floor(sec / 60);
-                this.label = min ? `${min}:${sec % 60}` : sec % 60;
+                this.label = `${zeroPad(min)}:${zeroPad(sec % 60)}`;
                 this.active = false;
             } else {
                 this.label = "Submit";
