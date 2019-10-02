@@ -5,18 +5,16 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', auth(true), async (req, res) => {
-  const data = await model.Entry.findAll({
-    include: {
-      model: model.Vote
-    }
-  }).map(entry => {
+  const data = await model.Entry.findAll().map(entry => {
     return {
       id: entry.id,
       login: entry.login,
       title: entry.data.title,
       category: entry.data.category,
+      round: entry.round,
+      result: entry.result,
       score: entry.score,
-      votes: entry.Votes.filter(vote => vote.result).map(vote => vote.id)
+      tbs: entry.tbs
     }
   });
   res.send(data);
@@ -25,12 +23,7 @@ router.get('/', auth(true), async (req, res) => {
 router.get('/:id', auth(true), async (req, res) => {
   const entry = await model.Entry.findOne({
     where: { id: req.params.id },
-    include: [{
-      model: model.Comment
-    }, {
-      model: model.Vote,
-      include: { model: model.Entry }
-    }]
+    include: { model: model.Comment }
   });
   if (!entry) {
     return res.status('404').send({ error: 'error_entry_not_found' });
@@ -39,10 +32,12 @@ router.get('/:id', auth(true), async (req, res) => {
     ...entry.data,
     id: entry.id,
     login: entry.login,
+    round: entry.round,
+    result: entry.result,
     score: entry.score,
-    criteria: config.criteria.map(criteria => ({
+    criteria: config.criteria.map((criteria, i) => ({
       name: criteria,
-      score: 0
+      score: entry.result[i]
     })),
     comments: entry.Comments.map(comment => ({
       login: comment.login,
@@ -50,16 +45,6 @@ router.get('/:id', auth(true), async (req, res) => {
       createdAt: comment.createdAt.getTime()
     }))
   };
-  for (const vote of entry.Votes) {
-    for (let i = 0; i < vote.result.length; i++) {
-      const id = vote.result[i];
-      if (!id) {
-        data.criteria[i].score += 1;
-      } else if (id === entry.id) {
-        data.criteria[i].score += 2;
-      }
-    }
-  }
   res.send({ data: data });
 });
 

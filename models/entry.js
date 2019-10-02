@@ -32,6 +32,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0
     },
+    result: {
+      type: DataTypes.JSON,
+    },
     tbs: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
