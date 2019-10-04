@@ -3,7 +3,7 @@ const config = require('./src/config');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const START = 3;
-const END = 28;
+const END = 30;
 const TIE = config.criteria.length;
 
 async function start() {

@@ -5,7 +5,12 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', auth(true), async (req, res) => {
-  const data = await model.Entry.findAll().map(entry => {
+  const data = await model.Entry.findAll({
+    order: [
+      ["score", "DESC"],
+      ["tbs", "DESC"],
+    ]
+  }).map(entry => {
     return {
       id: entry.id,
       login: entry.login,
