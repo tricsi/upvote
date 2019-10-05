@@ -19,8 +19,16 @@ async function start() {
     });
     for (const entry of entries) {
         entry.Votes.sort((a, b) => {
-            const scoreA = a.result.filter(id => id === entry.id).length;
-            const scoreB = b.result.filter(id => id === entry.id).length;
+            const scoreA = a.result.reduce((score, id, i) => {
+                if (id === entry.id) return score + 2;
+                if (id === 0) return score + 1;
+                return score;
+            }, 0);
+            const scoreB = b.result.reduce((score, id, i) => {
+                if (id === entry.id) return score + 2;
+                if (id === 0) return score + 1;
+                return score;
+            }, 0);
             return scoreB - scoreA;
         });
         const votes = entry.Votes.slice(START, END);

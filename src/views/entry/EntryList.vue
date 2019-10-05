@@ -61,12 +61,6 @@ export default {
           label: "Game"
         },
         {
-          key: "votes.length",
-          label: "Votes",
-          tdClass: "text-center",
-          thStyle: "width: 1%"
-        },
-        {
           key: "score",
           label: "Score",
           tdClass: "text-center",
@@ -76,6 +70,12 @@ export default {
           key: "tbs",
           label: "TBS",
           headerTitle: "Tie Break Score",
+          tdClass: "text-center",
+          thStyle: "width: 1%"
+        },
+        {
+          key: "round",
+          label: "Round",
           tdClass: "text-center",
           thStyle: "width: 1%"
         }
