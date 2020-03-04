@@ -13,7 +13,7 @@ function getTime(date, time) {
   return time ? time * 1000 + date.getTime() : false;
 }
 
-async function getData(vote) {
+function getData(vote) {
   return {
     id: vote.id,
     login: vote.login,
