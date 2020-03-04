@@ -54,9 +54,6 @@ module.exports = (sequelize, DataTypes) => {
     }
     return Entry.findAll({
       where: where,
-      include: {
-        model: sequelize.models.Vote
-      },
       order: [
         ['round'],
         ['lose'],
@@ -66,13 +63,26 @@ module.exports = (sequelize, DataTypes) => {
     }, config);
   };
 
-  Entry.prototype.hasVoteByLogin = function (login) {
-    return this.Votes.some(vote => vote.login === login);
+  Entry.prototype.getVotes = async function() {
+    if (!this.Votes) {
+      this.Votes = sequelize.models.Vote.findAll({
+        where: {
+          [Op.or]: [{entryOneId: this.id}, {entryTwoId: this.id}]
+        }
+      });
+    }
+    return this.Votes;
+  }
+
+  Entry.prototype.hasVoteByLogin = async function (login) {
+    const votes = await this.getVotes();
+    return votes.some(vote => vote.login === login);
   };
 
-  Entry.prototype.hasVoteInCommon = function (entry) {
-    for (let i = 0; i < this.Votes.length; i++) {
-      if (entry.Votes.some(vote => vote.id === this.Votes[i].id)) {
+  Entry.prototype.hasVoteInCommon = async function (entry) {
+    const votes = await this.getVotes();
+    for (let i = 0; i < votes.length; i++) {
+      if (votes.some(vote => vote.id === votes[i].id)) {
         return true;
       }
     }

@@ -11,8 +11,8 @@ const Vote = sequelize.import('./vote');
 
 Comment.belongsTo(Entry);
 Entry.hasMany(Comment);
-Entry.Vote = Entry.belongsToMany(Vote, { through: 'EntryVote' });
-Vote.Entry = Vote.belongsToMany(Entry, { through: 'EntryVote' });
+Vote.belongsTo(Entry, {as: "entryOne"});
+Vote.belongsTo(Entry, {as: "entryTwo"});
 
 module.exports = {
   sequelize: sequelize,

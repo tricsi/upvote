@@ -18,7 +18,8 @@ async function start() {
         }
     });
     for (const entry of entries) {
-        entry.Votes.sort((a, b) => {
+        let votes = await entry.getVotes();
+        votes.sort((a, b) => {
             const scoreA = a.result.reduce((score, id, i) => {
                 if (id === entry.id) return score + 2;
                 if (id === 0) return score + 1;
@@ -31,7 +32,7 @@ async function start() {
             }, 0);
             return scoreB - scoreA;
         });
-        const votes = entry.Votes.slice(START, END);
+        votes = votes.slice(START, END);
         entry.round = votes.length;
         entry.result = new Array(TIE).fill(0);
         entry.score = 0;
@@ -58,10 +59,11 @@ async function start() {
     for (const entry of entries) {
         const votes = store[entry.id];
         entry.tbs = 0;
-        entries.forEach(opponent => {
+        entries.forEach(async opponent => {
+            const opv = await opponent.getVotes();
             if (
                 entry.id !== opponent.id &&
-                opponent.Votes.filter(vote => votes.includes(vote.id)).length
+                opv.filter(vote => votes.includes(vote.id)).length
             ) {
                 entry.tbs += opponent.score;
             }
