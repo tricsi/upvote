@@ -1,26 +1,23 @@
 const Axios = require('axios');
 const jwt = require('jsonwebtoken');
-const model = require('../models')
+const model = require('../models');
+const config = require('../config');
 const express = require('express');
 const router = express.Router();
-const AUTH_CLOSED = process.env.AUTH_CLOSED
-  ? JSON.parse(process.env.AUTH_CLOSED)
-  : true;
-const AUTH_ADMIN = process.env.AUTH_ADMIN
-  ? process.env.AUTH_ADMIN.split(',')
-  : [];
+const AUTH_CLOSED = config.env.AUTH_CLOSED;
+const AUTH_ADMIN = config.env.AUTH_ADMIN;
 
 router.get('/', async (req, res) => {
   const code = req.query.code;
   if (!code) {
     const url = new URL('https://github.com/login/oauth/authorize');
-    url.searchParams.set('client_id', process.env.GITHUB_ID);
+    url.searchParams.set('client_id', config.env.GITHUB_ID);
     res.send({ url: url.toJSON() });
     return;
   }
   let resp = await Axios.post('https://github.com/login/oauth/access_token', {
-    client_id: process.env.GITHUB_ID,
-    client_secret: process.env.GITHUB_SECRET,
+    client_id: config.env.GITHUB_ID,
+    client_secret: config.env.GITHUB_SECRET,
     code: code
   }, { headers: { Accept: "application/json" } });
   if (!resp.data.access_token) {
@@ -48,7 +45,7 @@ router.get('/', async (req, res) => {
     id: resp.data.id,
     login: resp.data.login,
     token: access_token
-  }, process.env.JWT_SECRET);
+  }, config.env.JWT_SECRET);
   res.send({
     access_token: access_token,
     jwt_token: jwt_token,

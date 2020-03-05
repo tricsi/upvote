@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
-const VOTE_CLOSED = process.env.VOTE_CLOSED
-  ? JSON.parse(process.env.VOTE_CLOSED)
-  : true;
+const config = require('../config');
+const VOTE_CLOSED = config.env.VOTE_CLOSED;
 
 module.exports = function (onClose = null) {
   return function (req, res, next) {
@@ -14,7 +13,7 @@ module.exports = function (onClose = null) {
       return res.status('401').send({ error: 'error_missing_token' });
     }
     try {
-      const data = jwt.verify(token, process.env.JWT_SECRET);
+      const data = jwt.verify(token, config.env.JWT_SECRET);
       req.user = data;
       next();
     } catch (ex) {

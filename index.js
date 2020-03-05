@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
 const express = require('express');
 const cors = require('cors');
 require('express-async-errors');
 const model = require('./models');
+const sequelize = require('./models/sequelize');
 const error = require('./middleware/error');
 const app = express();
 const port = process.env.PORT || 80;
@@ -22,9 +22,10 @@ app.get('/*', (req, res) => {
 app.use(error);
 
 async function start() {
-  await model.sequelize.authenticate();
+  await sequelize.authenticate();
   app.listen(port, () => {
-    console.log(`Server listening on port ${port}!`);
+        // eslint-disable-next-line no-console
+        console.log(`Server listening on port ${port}!`);
   });
 }
 

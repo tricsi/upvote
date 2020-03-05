@@ -1,56 +1,13 @@
+const sequelize = require('./sequelize');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-module.exports = (sequelize, DataTypes) => {
+class Entry extends Sequelize.Model {
 
-  const Entry = sequelize.define('Entry', {
-    login: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    data: {
-      type: DataTypes.JSON,
-      allowNull: false
-    },
-    round: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-      defaultValue: 0
-    },
-    win: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-      defaultValue: 0
-    },
-    lose: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-      defaultValue: 0
-    },
-    score: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-      defaultValue: 0
-    },
-    result: {
-      type: DataTypes.JSON,
-    },
-    tbs: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-      defaultValue: 0
-    },
-    seed: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
-      defaultValue: () => Math.random()
-    }
-  });
-
-  Entry.findAllQueued = async function (maxRound, config) {
+  static async findAllQueued(maxRound, config) {
     const where = {};
     if (maxRound) {
-      where.round = {[Op.lt]: maxRound};
+      where.round = { [Op.lt]: maxRound };
     }
     return Entry.findAll({
       where: where,
@@ -61,25 +18,26 @@ module.exports = (sequelize, DataTypes) => {
         ['seed']
       ]
     }, config);
-  };
+  }
 
-  Entry.prototype.getVotes = async function() {
+  async getVotes() {
     if (!this.Votes) {
       this.Votes = sequelize.models.Vote.findAll({
         where: {
-          [Op.or]: [{entryOneId: this.id}, {entryTwoId: this.id}]
+          result: { [Op.ne]: null },
+          [Op.or]: [{ entryOneId: this.id }, { entryTwoId: this.id }]
         }
       });
     }
     return this.Votes;
   }
 
-  Entry.prototype.hasVoteByLogin = async function (login) {
+  async hasVoteByLogin(login) {
     const votes = await this.getVotes();
     return votes.some(vote => vote.login === login);
-  };
+  }
 
-  Entry.prototype.hasVoteInCommon = async function (entry) {
+  async hasVoteInCommon(entry) {
     const votes = await this.getVotes();
     for (let i = 0; i < votes.length; i++) {
       if (votes.some(vote => vote.id === votes[i].id)) {
@@ -87,9 +45,9 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
     return false;
-  };
+  }
 
-  Entry.prototype.saveComment = async function (login, message) {
+  async saveComment(login, message) {
     await sequelize.transaction(async t => {
       const comment = await sequelize.models.Comment.create({
         login: login,
@@ -100,5 +58,53 @@ module.exports = (sequelize, DataTypes) => {
     });
   }
 
-  return Entry;
-};
+}
+
+Entry.init({
+  login: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  data: {
+    type: Sequelize.JSON,
+    allowNull: false
+  },
+  round: {
+    type: Sequelize.INTEGER.UNSIGNED,
+    allowNull: false,
+    defaultValue: 0
+  },
+  win: {
+    type: Sequelize.INTEGER.UNSIGNED,
+    allowNull: false,
+    defaultValue: 0
+  },
+  lose: {
+    type: Sequelize.INTEGER.UNSIGNED,
+    allowNull: false,
+    defaultValue: 0
+  },
+  score: {
+    type: Sequelize.INTEGER.UNSIGNED,
+    allowNull: false,
+    defaultValue: 0
+  },
+  result: {
+    type: Sequelize.JSON,
+  },
+  tbs: {
+    type: Sequelize.INTEGER.UNSIGNED,
+    allowNull: false,
+    defaultValue: 0
+  },
+  seed: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+    defaultValue: () => Math.random()
+  }
+}, {
+  sequelize,
+  modelName: "Entry"
+});
+
+module.exports = Entry;

@@ -1,19 +1,10 @@
+const sequelize = require('./sequelize');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-module.exports = (sequelize, DataTypes) => {
+class Vote extends Sequelize.Model {
 
-  const Vote = sequelize.define('Vote', {
-    login: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    result: {
-      type: DataTypes.JSON,
-    }
-  });
-
-  Vote.findActive = async function (login) {
+  static async findActive(login) {
     const vote = await Vote.findOne({
       where: {
         login: login,
@@ -24,9 +15,9 @@ module.exports = (sequelize, DataTypes) => {
       }
     });
     return vote;
-  };
+  }
 
-  Vote.createActive = async function (maxRound, login, mine, same, again) {
+  static async createActive(maxRound, login, mine, same, again) {
     return await sequelize.transaction(async t => {
       const entries = await sequelize.models.Entry.findAllQueued(maxRound, { transaction: t });
       let i = 0;
@@ -56,19 +47,19 @@ module.exports = (sequelize, DataTypes) => {
       await entries[j].increment({ round: 1 }, { transaction: t });
       return vote;
     });
-  };
+  }
 
-  Vote.findAllByLogin = async function (login) {
+  static async findAllByLogin(login) {
     const votes = await Vote.findAll({
       where: {
         login: login,
-        result: {[Op.not]: null}
+        result: { [Op.not]: null }
       }
     });
     return votes;
-  };
+  }
 
-  Vote.prototype.findComments = async function () {
+  async findComments() {
     const ids = [this.entryOne.id, this.entryTwo.id];
     const result = await sequelize.models.Comment.findAll({
       where: {
@@ -79,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
     return result;
   }
 
-  Vote.prototype.saveResult = async function (result, length) {
+  async saveResult(result, length) {
     if (
       !(result instanceof Array) ||
       result.length !== length ||
@@ -108,7 +99,21 @@ module.exports = (sequelize, DataTypes) => {
       await this.entryTwo.increment(increment[1], { transaction: t });
       return this;
     });
-  };
+  }
 
-  return Vote;
-};
+}
+
+Vote.init({
+  login: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  result: {
+    type: Sequelize.JSON,
+  }
+}, {
+  sequelize,
+  modelName: "Vote"
+});
+
+module.exports = Vote;

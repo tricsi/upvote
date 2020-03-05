@@ -9,8 +9,8 @@
     "lint": "vue-cli-service lint",
     "debug": "nodemon --inspect ./index.js",
     "start": "node ./index.js",
-    "import": "node ./import.js",
-    "result": "node ./result.js"
+    "import": "node ./bin/import.js",
+    "result": "node ./bin/result.js"
   },
   "main": "index.js",
   "dependencies": {
