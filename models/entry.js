@@ -20,16 +20,15 @@ class Entry extends Sequelize.Model {
     }, config);
   }
 
-  async getVotes() {
+  async getVotes(unfinished = true) {
     if (!this.Votes) {
-      this.Votes = sequelize.models.Vote.findAll({
+      this.Votes = await sequelize.models.Vote.findAll({
         where: {
-          result: { [Op.ne]: null },
           [Op.or]: [{ entryOneId: this.id }, { entryTwoId: this.id }]
         }
       });
     }
-    return this.Votes;
+    return this.Votes.filter(vote => unfinished || vote.result !== null);
   }
 
   async hasVoteByLogin(login) {
@@ -38,9 +37,10 @@ class Entry extends Sequelize.Model {
   }
 
   async hasVoteInCommon(entry) {
-    const votes = await this.getVotes();
-    for (let i = 0; i < votes.length; i++) {
-      if (votes.some(vote => vote.id === votes[i].id)) {
+    const votes1 = await this.getVotes();
+    const votes2 = await entry.getVotes();
+    for (let i = 0; i < votes1.length; i++) {
+      if (votes2.some(vote => vote.id === votes1[i].id)) {
         return true;
       }
     }

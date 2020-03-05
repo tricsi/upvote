@@ -10,7 +10,7 @@ async function start() {
   const store = {};
   const entries = await model.Entry.findAll();
   for (const entry of entries) {
-    let votes = await entry.getVotes();
+    let votes = await entry.getVotes(false);
     votes.sort((a, b) => {
       const scoreA = a.result.reduce((score, id, i) => {
         if (id === entry.id) return score + 2;

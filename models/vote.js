@@ -59,17 +59,6 @@ class Vote extends Sequelize.Model {
     return votes;
   }
 
-  async findComments() {
-    const ids = [this.entryOne.id, this.entryTwo.id];
-    const result = await sequelize.models.Comment.findAll({
-      where: {
-        login: this.login,
-        EntryId: ids,
-      }
-    });
-    return result;
-  }
-
   async saveResult(result, length) {
     if (
       !(result instanceof Array) ||
