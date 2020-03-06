@@ -18,8 +18,8 @@ function getData(vote) {
     login: vote.login,
     result: vote.result,
     entries: [
-      {...vote.entryOne.data, id: vote.entryOneId},
-      {...vote.entryTwo.data, id: vote.entryTwoId}
+      { ...vote.entryOne.data, id: vote.entryOneId },
+      { ...vote.entryTwo.data, id: vote.entryTwoId }
     ],
     createdAt: vote.createdAt.getTime(),
     availableAt: getTime(vote.createdAt, VOTE_AVAILABLE),
@@ -27,7 +27,7 @@ function getData(vote) {
   };
 }
 
-router.get('/', auth(false), async ({user}, res) => {
+router.get('/', auth(false), async ({ user }, res) => {
   const vote = await model.Vote.findActive(user.login);
   if (!vote) {
     throw new Error("error_no_active_vote");
@@ -36,8 +36,11 @@ router.get('/', auth(false), async ({user}, res) => {
   res.send({ data });
 });
 
-router.post('/', auth(false), async ({user}, res) => {
+router.post('/', auth(false), async ({ user }, res) => {
   let vote = await model.Vote.findActive(user.login);
+  if (VOTE_EXPIRE && !vote && await model.Vote.pickExpired(user.login, VOTE_EXPIRE)) {
+    vote = await model.Vote.findActive(user.login);
+  }
   if (!vote && await model.Vote.createActive(VOTE_ROUNDS, user.login)) {
     vote = await model.Vote.findActive(user.login);
   }
@@ -48,7 +51,7 @@ router.post('/', auth(false), async ({user}, res) => {
   res.send({ data });
 });
 
-router.patch('/', auth(false), async ({user, body}, res) => {
+router.patch('/', auth(false), async ({ user, body }, res) => {
   const vote = await model.Vote.findActive(user.login);
   if (!vote) {
     throw new Error("error_no_active_vote");

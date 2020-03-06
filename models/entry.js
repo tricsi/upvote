@@ -11,12 +11,7 @@ class Entry extends Sequelize.Model {
     }
     return Entry.findAll({
       where: where,
-      order: [
-        ['round'],
-        ['lose'],
-        ['score'],
-        ['seed']
-      ]
+      order: [ ['round'], ['lose'], ['score'], ['seed']]
     }, config);
   }
 

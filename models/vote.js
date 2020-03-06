@@ -6,15 +6,34 @@ class Vote extends Sequelize.Model {
 
   static async findActive(login) {
     const vote = await Vote.findOne({
-      where: {
-        login: login,
-        result: null
-      },
-      include: {
-        all: true
-      }
+      where: { login: login, result: null },
+      include: { all: true }
     });
     return vote;
+  }
+
+  static async pickExpired(login, expire, mine, same) {
+    return await sequelize.transaction(async t => {
+      const date = new Date(new Date() - expire * 1000);
+      const votes = await Vote.findAll({
+        where: { updatedAt: { [Op.lt]: date }, result: null },
+        include: { all: true }
+      }, { transaction: t });
+      for (const vote of votes) {
+        if (
+          (!mine && vote.entryOne.login === login) ||
+          (!mine && vote.entryTwo.login === login) ||
+          (!same && vote.entryOne.hasVoteByLogin(login)) ||
+          (!same && vote.entryTwo.hasVoteByLogin(login))
+        ) {
+          continue;
+        }
+        vote.login = login;
+        await vote.save();
+        return vote;
+      }
+      return null;
+    });
   }
 
   static async createActive(maxRound, login, mine, same, again) {
@@ -49,12 +68,9 @@ class Vote extends Sequelize.Model {
     });
   }
 
-  static async findAllByLogin(login) {
+  static async findFinished(login) {
     const votes = await Vote.findAll({
-      where: {
-        login: login,
-        result: { [Op.not]: null }
-      }
+      where: { login: login, result: { [Op.not]: null } }
     });
     return votes;
   }
