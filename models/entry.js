@@ -32,14 +32,10 @@ class Entry extends Sequelize.Model {
   }
 
   async hasVoteInCommon(entry) {
-    const votes1 = await this.getVotes();
-    const votes2 = await entry.getVotes();
-    for (let i = 0; i < votes1.length; i++) {
-      if (votes2.some(vote => vote.id === votes1[i].id)) {
-        return true;
-      }
-    }
-    return false;
+    const votes1 = (await this.getVotes()).map(vote => vote.id);
+    const votes2 = (await entry.getVotes()).map(vote => vote.id);
+    const common = votes1.filter(id => votes2.includes(id));
+    return common.length > 0;
   }
 
   async saveComment(login, message) {

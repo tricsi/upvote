@@ -23,8 +23,8 @@ class Vote extends Sequelize.Model {
         if (
           (!mine && vote.entryOne.login === login) ||
           (!mine && vote.entryTwo.login === login) ||
-          (!same && vote.entryOne.hasVoteByLogin(login)) ||
-          (!same && vote.entryTwo.hasVoteByLogin(login))
+          (!same && await vote.entryOne.hasVoteByLogin(login)) ||
+          (!same && await vote.entryTwo.hasVoteByLogin(login))
         ) {
           continue;
         }
