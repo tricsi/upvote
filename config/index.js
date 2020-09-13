@@ -11,6 +11,7 @@ module.exports = {
     GITHUB_SECRET: process.env.GITHUB_SECRET,
     JWT_SECRET: process.env.JWT_SECRET,
     VOTE_AVAILABLE: parseInt(process.env.VOTE_AVAILABLE) || 0,
+    VOTE_CATEGORY: process.env.VOTE_CATEGORY ? process.env.VOTE_CATEGORY.split(',') : false,
     VOTE_CLOSED: process.env.VOTE_CLOSED ? JSON.parse(process.env.VOTE_CLOSED) : true,
     VOTE_EXPIRE: parseInt(process.env.VOTE_EXPIRE) || 0,
     VOTE_ROUNDS: parseInt(process.env.VOTE_ROUNDS) || 0,

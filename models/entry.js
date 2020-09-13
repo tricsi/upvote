@@ -2,17 +2,32 @@ const sequelize = require('./sequelize');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
+function categoryFilter(entry, category)
+{
+  return category instanceof Array
+    ? category.filter(c => entry.data.category.includes(c)).length
+    : true;
+}
+
 class Entry extends Sequelize.Model {
 
-  static async findAllQueued(maxRound, config) {
+  static async findAllEnabled(category) {
+    const result = await Entry.findAll({
+      order: [["score", "DESC"], ["tbs", "DESC"]],
+    });
+    return result.filter(entry => categoryFilter(entry, category));
+  }
+
+  static async findAllQueued(maxRound, category, config) {
     const where = {};
     if (maxRound) {
       where.round = { [Op.lt]: maxRound };
     }
-    return Entry.findAll({
+    const result = await Entry.findAll({
       where: where,
       order: [ ['round'], ['lose'], ['score'], ['seed']]
     }, config);
+    return result.filter(entry => categoryFilter(entry, category));
   }
 
   async getVotes(unfinished = true) {

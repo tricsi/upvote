@@ -6,30 +6,30 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
 
-  state: {
-    user: JSON.parse(sessionStorage.getItem('user')) || null,
-  },
-
-  mutations: {
-
-    setUser(state, user) {
-      state.user = user;
-      sessionStorage.setItem('user', JSON.stringify(user));
-      Axios.defaults.headers.common['Authorization'] = user ? `Bearer ${user.jwt_token}` : null;
-    }
-
-  },
-
-  actions: {
-
-    signIn({ commit }, user) {
-      commit('setUser', user);
+    state: {
+        user: JSON.parse(localStorage.getItem('user')) || null,
     },
 
-    signOut({ commit }) {
-      commit('setUser', null);
-    }
+    mutations: {
 
-  }
+        setUser(state, user) {
+            state.user = user;
+            localStorage.setItem('user', JSON.stringify(user));
+            Axios.defaults.headers.common['Authorization'] = user ? `Bearer ${user.jwt_token}` : null;
+        }
+
+    },
+
+    actions: {
+
+        signIn({ commit }, user) {
+            commit('setUser', user);
+        },
+
+        signOut({ commit }) {
+            commit('setUser', null);
+        }
+
+    }
 
 });

@@ -1,13 +1,13 @@
 const auth = require('../middleware/auth');
-const config = require('../src/config');
+const config = require('../config');
 const model = require('../models');
 const express = require('express');
 const router = express.Router();
+const VOTE_CATEGORY = config.env.VOTE_CATEGORY;
 
 router.get('/', auth(true), async (req, res) => {
-  const data = await model.Entry.findAll({
-    order: [["score", "DESC"], ["tbs", "DESC"]],
-  }).map(entry => ({
+  let data = await model.Entry.findAllEnabled(VOTE_CATEGORY);
+  data = data.map(entry => ({
     id: entry.id,
     login: entry.login,
     title: entry.data.title,

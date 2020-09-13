@@ -36,9 +36,9 @@ class Vote extends Sequelize.Model {
     });
   }
 
-  static async createActive(maxRound, login, mine, same, again) {
+  static async createActive(maxRound, category, login, mine, same, again) {
     return await sequelize.transaction(async t => {
-      const entries = await sequelize.models.Entry.findAllQueued(maxRound, { transaction: t });
+      const entries = await sequelize.models.Entry.findAllQueued(maxRound, category, { transaction: t });
       let i = 0;
       while (i < entries.length && (
         (!mine && entries[i].login === login)

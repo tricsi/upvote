@@ -9,6 +9,7 @@
         "AUTH_ADMIN": "tricsi",
         "AUTH_CLOSED": "false",
         "VOTE_CLOSED": "true",
+        "VOTE_CATEGORY": "desktop,mobile,server",
         "VOTE_AVAILABLE": 600,
         "VOTE_EXPIRE": 3600,
         "VOTE_ROUNDS": 9
