@@ -6,22 +6,17 @@ const router = express.Router();
 
 router.get('/', auth(true), async (req, res) => {
   const data = await model.Entry.findAll({
-    order: [
-      ["score", "DESC"],
-      ["tbs", "DESC"],
-    ]
-  }).map(entry => {
-    return {
-      id: entry.id,
-      login: entry.login,
-      title: entry.data.title,
-      category: entry.data.category,
-      round: entry.round,
-      result: entry.result,
-      score: entry.score,
-      tbs: entry.tbs
-    }
-  });
+    order: [["score", "DESC"], ["tbs", "DESC"]],
+  }).map(entry => ({
+    id: entry.id,
+    login: entry.login,
+    title: entry.data.title,
+    category: entry.data.category,
+    round: entry.round,
+    result: entry.result,
+    score: entry.score,
+    tbs: entry.tbs
+  }));
   res.send(data);
 });
 
@@ -42,7 +37,7 @@ router.get('/:id', auth(true), async (req, res) => {
     score: entry.score,
     criteria: config.criteria.map((criteria, i) => ({
       name: criteria,
-      score: entry.result[i]
+      score: entry.result ? entry.result[i] : 0
     })),
     comments: entry.Comments.map(comment => ({
       login: comment.login,
@@ -50,7 +45,7 @@ router.get('/:id', auth(true), async (req, res) => {
       createdAt: comment.createdAt.getTime()
     }))
   };
-  res.send({ data: data });
+  res.send({ data });
 });
 
 module.exports = router;

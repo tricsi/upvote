@@ -1,117 +1,81 @@
+const sequelize = require('./sequelize');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-module.exports = (sequelize, DataTypes) => {
+class Vote extends Sequelize.Model {
 
-  const Vote = sequelize.define('Vote', {
-    login: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    result: {
-      type: DataTypes.JSON,
-    }
-  });
-
-  Vote.findActive = async function (login) {
+  static async findActive(login) {
     const vote = await Vote.findOne({
-      where: {
-        login: login,
-        result: null
-      },
-      include: {
-        model: sequelize.models.Entry
-      }
+      where: { login: login, result: null },
+      include: { all: true }
     });
     return vote;
-  };
+  }
 
-  Vote.pickExpired = async function (login, expire, mine, same) {
+  static async pickExpired(login, expire, mine, same) {
     return await sequelize.transaction(async t => {
+      const date = new Date(new Date() - expire * 1000);
       const votes = await Vote.findAll({
-        where: {
-          result: null,
-          updatedAt: { [Op.lt]: new Date(new Date() - expire * 1000) }
-        },
-        include: {
-          model: sequelize.models.Entry,
-          include: {
-            model: sequelize.models.Vote
-          }
-        }
+        where: { updatedAt: { [Op.lt]: date }, result: null },
+        include: { all: true }
       }, { transaction: t });
       for (const vote of votes) {
-        let valid = true;
-        for (const entry of vote.Entries) {
-          if (
-            (!mine && entry.login === login) ||
-            (!same && entry.hasVoteByLogin(login))
-          ) {
-            valid = false;
-          }
+        if (
+          (!mine && vote.entryOne.login === login) ||
+          (!mine && vote.entryTwo.login === login) ||
+          (!same && await vote.entryOne.hasVoteByLogin(login)) ||
+          (!same && await vote.entryTwo.hasVoteByLogin(login))
+        ) {
+          continue;
         }
-        if (valid) {
-          vote.login = login;
-          await vote.save();
-          return vote;
-        }
+        vote.login = login;
+        await vote.save();
+        return vote;
       }
       return null;
     });
   }
 
-  Vote.createActive = async function (maxRound, login, mine, same, again) {
+  static async createActive(maxRound, login, mine, same, again) {
     return await sequelize.transaction(async t => {
       const entries = await sequelize.models.Entry.findAllQueued(maxRound, { transaction: t });
       let i = 0;
       while (i < entries.length && (
-        (!mine && entries[i].login === login) ||
-        (!same && entries[i].hasVoteByLogin(login))
+        (!mine && entries[i].login === login)
+        || (!same && await entries[i].hasVoteByLogin(login))
       )) {
         i++;
       }
       let j = i + 1;
       while (j < entries.length && (
-        (!mine && entries[j].login === login) ||
-        (!same && entries[j].hasVoteByLogin(login)) ||
-        (!again && entries[j].hasVoteInCommon(entries[i]))
+        (!mine && entries[j].login === login)
+        || (!same && await entries[j].hasVoteByLogin(login))
+        || (!again && await entries[j].hasVoteInCommon(entries[i]))
       )) {
         j++;
       }
       if (j >= entries.length) {
         return null;
       }
-      const vote = await Vote.create({ login: login }, { transaction: t });
-      await vote.addEntry(entries[i], { transaction: t });
-      await vote.addEntry(entries[j], { transaction: t });
+      const vote = await Vote.create({
+        login: login,
+        entryOneId: entries[i].id,
+        entryTwoId: entries[j].id
+      }, { transaction: t });
       await entries[i].increment({ round: 1 }, { transaction: t });
       await entries[j].increment({ round: 1 }, { transaction: t });
       return vote;
     });
-  };
-
-  Vote.findAllByLogin = async function (login) {
-    const votes = await Vote.findAll({
-      where: {
-        login: login,
-        result: {[Op.not]: null}
-      }
-    });
-    return votes;
-  };
-
-  Vote.prototype.findComments = async function () {
-    const ids = this.Entries.map(entry => entry.id);
-    const result = await sequelize.models.Comment.findAll({
-      where: {
-        login: this.login,
-        EntryId: ids,
-      }
-    });
-    return result;
   }
 
-  Vote.prototype.saveResult = async function (result, length) {
+  static async findFinished(login) {
+    const votes = await Vote.findAll({
+      where: { login: login, result: { [Op.not]: null } }
+    });
+    return votes;
+  }
+
+  async saveResult(result, length) {
     if (
       !(result instanceof Array) ||
       result.length !== length ||
@@ -134,15 +98,27 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
     return await sequelize.transaction(async t => {
-      const entries = await this.getEntries();
-      entries.sort((a, b) => a.seed - b.seed);
-      this.result = result.map(i => i ? entries[i < 0 ? 0 : 1].id : 0);
+      this.result = result.map(i => i ? (i < 0 ? this.entryOneId : this.entryTwoId) : 0);
       await this.save({ transaction: t });
-      await entries[0].increment(increment[0], { transaction: t });
-      await entries[1].increment(increment[1], { transaction: t });
+      await this.entryOne.increment(increment[0], { transaction: t });
+      await this.entryTwo.increment(increment[1], { transaction: t });
       return this;
     });
-  };
+  }
 
-  return Vote;
-};
+}
+
+Vote.init({
+  login: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  result: {
+    type: Sequelize.JSON,
+  }
+}, {
+  sequelize,
+  modelName: "Vote"
+});
+
+module.exports = Vote;

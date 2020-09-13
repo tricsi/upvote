@@ -1,17 +1,22 @@
-module.exports = (sequelize, DataTypes) => {
+const sequelize = require('./sequelize');
+const Sequelize = require('sequelize');
 
-  const Comment = sequelize.define('Comment', {
-    login: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    message: {
-      type: DataTypes.TEXT,
-      validate: {
-        len: [0, 3000]
-      }
+class Comment extends Sequelize.Model { }
+
+Comment.init({
+  login: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  message: {
+    type: Sequelize.TEXT,
+    validate: {
+      len: [0, 3000]
     }
-  });
+  }
+}, {
+  sequelize,
+  modelName: "Comment"
+});
 
-  return Comment;
-};
+module.exports = Comment;
