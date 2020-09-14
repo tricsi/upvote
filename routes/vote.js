@@ -63,8 +63,14 @@ router.patch('/', auth(false), async ({ user, body }, res) => {
   await vote.saveResult(body.result, config.criteria.length);
   if (body.comments instanceof Array) {
     const comments = body.comments.map(comment => typeof comment === 'string' ? comment.trim() : '');
-    vote.entryOne.saveComment(user.login, comments[0] || '');
-    vote.entryTwo.saveComment(user.login, comments[1] || '');
+    if (comments[0])
+    {
+      vote.entryOne.saveComment(user.login, comments[0]);
+    }
+    if (comments[1])
+    {
+      vote.entryTwo.saveComment(user.login, comments[1]);
+    }
   }
   res.send({ data: vote.id });
 });
