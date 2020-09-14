@@ -1,12 +1,12 @@
 module.exports = {
     criteria: [
-        "innovation",
-        "fun",
-        "theme",
-        "gameplay",
-        "graphics",
-        "audio",
-        "controls"
+        "Innovation",
+        "Fun",
+        "Theme",
+        "Gameplay",
+        "Graphics",
+        "Audio",
+        "Controls"
     ],
     categories: [
         "desktop",
