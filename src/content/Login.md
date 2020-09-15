@@ -7,7 +7,7 @@ We're changing the rules this year - instead of trying to play\
 all the games to score them fairly, you will be presented with\
 two random games to compare and decide which one of them is\
 better in given criteria: Innovation, Fun, Theme, Gameplay,\
-Graphics, and Technical. You can also mark any of them as a tie.
+Graphics, Audio, and Control. You can also mark any of them as a tie.
 
 Only those who submitted a game are allowed to vote. Be aware that\
 we need as many votes as possible to end up with solid results, so\
