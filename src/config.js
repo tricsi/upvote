@@ -6,7 +6,8 @@ module.exports = {
         "Gameplay",
         "Graphics",
         "Audio",
-        "Controls"
+        "Controls",
+        "Mobile Support"
     ],
     categories: [
         "desktop",

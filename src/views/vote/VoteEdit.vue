@@ -101,7 +101,7 @@ export default {
       comments: null,
       result: null,
       vote: null,
-      criteria: Config.criteria,
+      criteria: [...Config.criteria],
       content: Content
     };
   },
@@ -115,7 +115,7 @@ export default {
     async fetchData() {
       const session = JSON.parse(sessionStorage.getItem("vote")) || {
         comments: ["", ""],
-        result: new Array(this.criteria.length).fill(0)
+        result: new Array(Config.criteria.length).fill(0)
       };
       this.comments = session.comments;
       this.result = session.result;
@@ -145,6 +145,10 @@ export default {
 
     onLoad() {
       const entries = this.vote.entries;
+      const count = entries.reduce((c, e) => e.category.includes("mobile") ? c + 1 : c, 0);
+      if (count < entries.length) {
+        this.criteria.pop();
+      }
       if (this.vote.result) {
         this.result = this.vote.result.map(id => {
           if (id === entries[0].id) return -1;
@@ -196,7 +200,7 @@ export default {
           this.onLoad();
         } else {
           this.vote = null;
-          this.result = new Array(this.criteria.length).fill(0);
+          this.result = new Array(Config.criteria.length).fill(0);
           this.comments = ["", ""];
           this.error = null;
           this.voted = true;
