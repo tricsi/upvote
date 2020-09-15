@@ -7,4 +7,4 @@ You will be presented with two random games to compare and decide which one of t
 
 Only those who submitted a game are allowed to vote. Be aware that we need as many votes as possible to end up with solid results, so please vote for at least 20-30 pairs, but ideally all 113 of them. You won't be allowed to vote for your own game, and for the same games twice though. 
 
-Read more in [this blog post](https://medium.com/js13kgames/new-voting-system-judging-and-selecting-winners-1fcf27dfda5e).
+Read more in [this blog post](https://medium.com/js13kgames/lets-vote-9810617d35b).

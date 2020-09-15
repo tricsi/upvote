@@ -28,6 +28,11 @@ router.get('/:id', auth(true), async (req, res) => {
   if (!entry) {
     return res.status('404').send({ error: 'error_entry_not_found' });
   }
+  const criteria = [...config.criteria];
+  if (!entry.data.category.includes("mobile"))
+  {
+    criteria.pop();
+  }
   const data = {
     ...entry.data,
     id: entry.id,
@@ -35,7 +40,7 @@ router.get('/:id', auth(true), async (req, res) => {
     round: entry.round,
     result: entry.result,
     score: entry.score,
-    criteria: config.criteria.map((criteria, i) => ({
+    criteria: criteria.map((criteria, i) => ({
       name: criteria,
       score: entry.result ? entry.result[i] : 0
     })),

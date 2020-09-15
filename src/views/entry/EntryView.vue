@@ -62,6 +62,7 @@ export default {
         this.loading = true;
         const response = await Axios.get(`/api/entry/${this.id}`);
         const entry = response.data.data;
+        
         entry.criteria.push({
           name: "Total",
           score: entry.score
