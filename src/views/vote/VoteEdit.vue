@@ -143,12 +143,19 @@ export default {
       );
     },
 
-    onLoad() {
+    filterCategory()
+    {
       const entries = this.vote.entries;
+      this.criteria = [...Config.criteria];
       const count = entries.reduce((c, e) => e.category.includes("mobile") ? c + 1 : c, 0);
       if (count < entries.length) {
         this.criteria.pop();
       }
+    },
+
+    onLoad() {
+      this.filterCategory();
+      const entries = this.vote.entries;
       if (this.vote.result) {
         this.result = this.vote.result.map(id => {
           if (id === entries[0].id) return -1;
@@ -181,6 +188,7 @@ export default {
       try {
         const response = await Axios.post("/api/vote");
         this.vote = response.data.data;
+        this.filterCategory();
         this.error = null;
       } catch (error) {
         this.error = Config.messages[error.response.data.error];
