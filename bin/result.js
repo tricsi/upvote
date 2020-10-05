@@ -13,17 +13,15 @@ async function start() {
     let votes = await entry.getVotes(false);
     votes.sort((a, b) => {
       const scoreA = a.result.reduce((score, id, i) => {
-        if (i < 7) {
-          if (id === entry.id) return score + 2;
-          if (id === 0) return score + 1;
-        }
+        if (i >= 7) return score;
+        if (id === entry.id) return score + 2;
+        if (id === 0) return score + 1;
         return score;
       }, 0);
       const scoreB = b.result.reduce((score, id, i) => {
-        if (i < 7) {
-          if (id === entry.id) return score + 2;
-          if (id === 0) return score + 1;
-        }
+        if (i >= 7) return score;
+        if (id === entry.id) return score + 2;
+        if (id === 0) return score + 1;
         return score;
       }, 0);
       return scoreB - scoreA;
@@ -36,15 +34,13 @@ async function start() {
     entry.win = 0;
     for (const vote of votes) {
       const score = vote.result.reduce((score, id, i) => {
-        if (i < 7) {
-          if (id === entry.id) {
-            entry.result[i] += 2;
-            return score + 2;
-          }
-          if (id === 0) {
-            entry.result[i] += 1;
-            return score + 1;
-          }
+        if (id === entry.id) {
+          entry.result[i] += 2;
+          return i < 7 ? score + 2 : score;
+        }
+        if (id === 0) {
+          entry.result[i] += 1;
+          return i < 7 ? score + 1 : score;
         }
         return score;
       }, 0);
