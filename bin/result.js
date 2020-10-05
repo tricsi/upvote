@@ -1,8 +1,8 @@
 const model = require('../models');
 const config = require('../src/config');
 const sequelize = require('../models/sequelize');
-const START = 0;
-const END = 30;
+const START = 3;
+const END = 41;
 const TIE = config.criteria.length;
 
 async function start() {
@@ -13,13 +13,17 @@ async function start() {
     let votes = await entry.getVotes(false);
     votes.sort((a, b) => {
       const scoreA = a.result.reduce((score, id, i) => {
-        if (id === entry.id) return score + 2;
-        if (id === 0) return score + 1;
+        if (i < 7) {
+          if (id === entry.id) return score + 2;
+          if (id === 0) return score + 1;
+        }
         return score;
       }, 0);
       const scoreB = b.result.reduce((score, id, i) => {
-        if (id === entry.id) return score + 2;
-        if (id === 0) return score + 1;
+        if (i < 7) {
+          if (id === entry.id) return score + 2;
+          if (id === 0) return score + 1;
+        }
         return score;
       }, 0);
       return scoreB - scoreA;
@@ -32,13 +36,15 @@ async function start() {
     entry.win = 0;
     for (const vote of votes) {
       const score = vote.result.reduce((score, id, i) => {
-        if (id === entry.id) {
-          entry.result[i] += 2;
-          return score + 2;
-        }
-        if (id === 0) {
-          entry.result[i] += 1;
-          return score + 1;
+        if (i < 7) {
+          if (id === entry.id) {
+            entry.result[i] += 2;
+            return score + 2;
+          }
+          if (id === 0) {
+            entry.result[i] += 1;
+            return score + 1;
+          }
         }
         return score;
       }, 0);
@@ -51,7 +57,7 @@ async function start() {
   for (const entry of entries) {
     const votes = store[entry.id];
     entry.tbs = 0;
-    entries.forEach(async opponent => {
+    for (const opponent of entries) {
       const opv = await opponent.getVotes();
       if (
         entry.id !== opponent.id &&
@@ -59,7 +65,7 @@ async function start() {
       ) {
         entry.tbs += opponent.score;
       }
-    });
+    }
     await entry.save();
   }
   entries.sort((a, b) => b.score - a.score || b.tbs - a.tbs);
