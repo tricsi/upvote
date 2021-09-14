@@ -11,6 +11,7 @@ module.exports = {
     ],
     categories: [
         "desktop",
+        "decentralized",
         "mobile",
         "server",
         "web monetization",
