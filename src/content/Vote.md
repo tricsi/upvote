@@ -1,7 +1,7 @@
 # How to Upvote?
 
 **Take your time**\
-Spend at least 5 minute to play each game. You can find great ideas everywhere.
+Spend at least 1 minute to play each game. You can find great ideas everywhere.
 
 **Stay objective**\
 Everyone has friends and favorites. Put them away this time.
