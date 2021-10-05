@@ -2,7 +2,7 @@ const model = require('../models');
 const config = require('../src/config');
 const sequelize = require('../models/sequelize');
 const START = 3;
-const END = 41;
+const END = 56;
 const TIE = config.criteria.length;
 
 async function start() {
