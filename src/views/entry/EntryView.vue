@@ -15,13 +15,13 @@
     </div>
 
     <div class="my-3">
-      <b-card :key="index" v-for="(comment, index) in entry.comments">
-        <b-card-text>{{ comment.message }}</b-card-text>
-        <div slot="footer">
+      <b-card :key="index" v-for="(comment, index) in entry.comments" class="mb-2">
+        <div slot="header">
           <i class="float-right">{{ new Intl.DateTimeFormat('en-US').format(new Date(comment.createdAt)) }}</i>
           <b-img :src="`https://github.com/${comment.login}.png?size=26`" width="26" :alt="comment.login" rounded />
           <a :href="`https://github.com/${comment.login}`" class="ml-1">{{ comment.login }}</a>
         </div>
+        <b-card-text>{{ comment.message }}</b-card-text>
       </b-card>
     </div>
   </div>
